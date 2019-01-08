@@ -1,0 +1,12 @@
+language: node_js
+node_js: node
+cache: 
+directories:
+- node_modules
+deploy:
+  provider: heroku
+  api_key:
+    secure: TVtZRIfuSafjy/UzFi99tWYTPvecJeZkRwHPtzdaYChmUUWGynclko5WHIu4JuSnVMIeAqE3vBdI3wOvH07xHfZJi8myFGnJSesodrGiJnDXCm2qT3/x2b6Lq43d8kkIkij2OR/RsLEHF4WIHSaucDMslm9Ec5KHhoY5JbRiV3ecw0Gd/iTdWuNDvx7AtS11vxZ2xwthmVv9EqHzs59FXUM978tRcpE6SJbDv//Am7HDQAWd+f2g6NLFUBZjdZOWZI3A+F4PfeX1j1y5Ob9UGk1p1MHalI9eE6vuaaOVZFkcJgOFo4fAd70xIYmdkZktEfe9B9/uj/uvKUQlRqqYEOboraeH/H88AtiadNS8aY8WZ/KMsrFUO1mhtBPjZ/YhGgEFNhfLUrscVAaDviblnEyiE6SXj5W3ZLM2OXa+LUyTf0/ybA5xTJMjkim27Y+GjdQbccnrvgH4mUDwUkjAFWaSsCWDo05PVkx22WA6gncXpXcwgtrtG5HyWSXpQkUJuEPKGeiw+I/m8i7QWJ4j7x093HKwtsTW0M5PEq5Eq++q4LsXGT7SrVo4+yW91EZbBKVm5tDszIjXe7rShrodr9RjAlb/M5FOisdCCZ2Po51MEjwR9XmKzY7xZpwc9QETg0nW7wERRXFLbs5HB8LDaoZ9uKmVHqhkx11jL1M2Nlk=
+  app: afternoon-peak-27740
+  on:
+    repo: ex-git/words-explorer-frontEnd
