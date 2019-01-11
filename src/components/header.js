@@ -8,14 +8,7 @@ export default function header() {
         <h1>
             <Link to='/'>Words Explorer</Link>
         </h1>
-        <TopNav links={
-            [
-                {   
-                    name:"Login",
-                    url:"/login"
-                }
-            ]
-        }/>
+        <TopNav />
     </header>
   )
 }

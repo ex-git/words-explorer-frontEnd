@@ -1,6 +1,7 @@
 import React from 'react'
+import {connect} from 'react-redux'
 
-export default function ranking(props) {
+export function ranking(props) {
     const rank = props.ranks.map((rank, idx)=>
         <li key={idx}>
             {rank.name} - {rank.score}
@@ -15,3 +16,9 @@ export default function ranking(props) {
         </section>
     )
 }
+
+const mapStateToProps = state => ({
+    ranks: state.ranks
+})
+
+export default connect(mapStateToProps)(ranking)

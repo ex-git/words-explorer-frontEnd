@@ -1,10 +1,12 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
+import {connect} from 'react-redux'
 
-export default function openGame(props) {
-    const openGames = props.games.map((game, idx)=>
+export function openGame(props) {
+    console.log(props)
+    const openGames = props.availableGames.map((game, idx)=>
         <li key={idx}>
-            {game.id}
+            Game ID: {game.id}
             Status: {game.status}
             <Link to={`/game/${game.id}`}>join game</Link>
         </li>)
@@ -17,3 +19,8 @@ export default function openGame(props) {
         </section>
   )
 }
+ const mapStateToProps = state => ({
+    availableGames: state.availableGames
+ })
+
+ export default connect(mapStateToProps)(openGame)

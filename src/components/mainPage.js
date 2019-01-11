@@ -11,17 +11,9 @@ export default function mainPage() {
     <div>
         <IntroSection />
         <HowTo />
-        <OpenGame games={[
-                {id:112233, status:"playing"},
-                {id:990099, status:"open"}
-            ]}
-        />
+        <OpenGame />
         <JoinGame />
-        <Ranking ranks={[
-                {name: "Maxwell", score: 999},
-                {name: "Lily", score: 354},
-            ]}
-        />
+        <Ranking />
     </div>
   )
 }
