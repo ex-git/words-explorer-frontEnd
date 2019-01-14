@@ -13,3 +13,13 @@ export const submitAnswer = (answer)=> ({
     type: SUBMIT_ANSWER,
     answer
 })
+export const CALCULATE_SCORE = 'CALCULATE_SCORE'
+export const calculateScore = (answers)=> ({
+    type: CALCULATE_SCORE,
+    answers
+})
+export const UPDATE_STATUS = 'UPDATE_STATUS'
+export const updateStatus = (status)=> ({
+    type: UPDATE_STATUS,
+    status
+})
