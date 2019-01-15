@@ -10,7 +10,6 @@ export class liveGameForm extends React.Component {
         }        
     }
     render () {
-        console.log(this.props.game.answerReceived)
         if(this.props.game.timeleft=== '-') {
             return <div>
                 {this.props.game.status}

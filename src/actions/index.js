@@ -1,3 +1,9 @@
+
+export const UPDATE_GAME = 'UPDATE_GAME'
+export const updateGame = (gameStatus)=> ({
+    type: UPDATE_GAME,
+    gameStatus
+})
 export const UPDATE_TIMMER = 'UPDATE_TIMMER'
 export const updateTimmer = (timeleft)=> ({
     type: UPDATE_TIMMER,

@@ -1,4 +1,4 @@
-import {UPDATE_TIMMER, UPDATE_QUESTION_INDEX, SUBMIT_ANSWER, CALCULATE_SCORE, UPDATE_STATUS} from '../actions'
+import {UPDATE_TIMMER, UPDATE_QUESTION_INDEX, SUBMIT_ANSWER, CALCULATE_SCORE, UPDATE_STATUS, UPDATE_GAME} from '../actions'
 
 const initState = {
     availableGames: [
@@ -16,6 +16,7 @@ const initState = {
         {name: "Lily", score: 354},
     ],
     game: {
+        gameStatus: 'open',
         id: 33889,
         questions: [
                 {question: ['{bc}somewhat cold {bc}not warm',
@@ -31,26 +32,36 @@ const initState = {
         currentQuestion:0,
         timeleft:5,
         answerReceived: {},
-        players: [{'maxwell':0}],
-        score:[] ,
-        status: 'aa'
+        players: {'maxwell':{onlineStatus:'yes',totalScore:0, totalAnswered:0, bonus:0}},
+        status: ''
     },
-    user: "Maxwell"
+    user: "maxwell"
 }
 
 export const wordsExplorerReducer  = (state=initState, action) => {
     switch (action.type) {
+        case UPDATE_GAME:
+            const newGameStatus = Object.assign({}, state.game, {gameStatus:action.gameStatus})
+            return Object.assign({}, state, {game:newGameStatus})
         case UPDATE_TIMMER:
             const newGameTimeleft = Object.assign({}, state.game, {timeleft:action.timeleft})
             return Object.assign({}, state, {game:newGameTimeleft})
         case CALCULATE_SCORE:
-            for(let answer of state.game.answerReceived) {
-
+            let newPlayersWithScore = Object.assign({}, state.game.players)
+            for (let idx of Object.keys(state.game.answerReceived)) {
+                for (let nameOfPlayer of Object.keys(state.game.players)) {
+                    if (state.game.answerReceived[idx].find(answer=>Object.keys(answer)[0]=== nameOfPlayer)) {
+                        newPlayersWithScore[nameOfPlayer].totalAnswered+=1
+                        newPlayersWithScore[nameOfPlayer].totalScore+=state.game.answerReceived[idx].filter(answer=>Object.keys(answer)[0] === nameOfPlayer)[0][nameOfPlayer].answer
+                    }
+                    //get bonus if player is the 1st one submitted the correct answer
+                    console.log(Object.keys(state.game.answerReceived[idx][0])[0], nameOfPlayer, state.game.answerReceived[idx][0][nameOfPlayer].answer)
+                    Object.keys(state.game.answerReceived[idx][0])[0]===nameOfPlayer && state.game.answerReceived[idx][0][nameOfPlayer].answer===1 ? newPlayersWithScore[nameOfPlayer].bonus+=1 : newPlayersWithScore[nameOfPlayer].bonus+=0
+                }
             }
-
-
-            const updatedScore = Object.assign({}, state.game, {score: state.game.answerReceived})
-            return Object.assign({}, state, {game:newGameQuestionsIndex})
+            const updatedPlayersScore = Object.assign({}, state.game, {players: newPlayersWithScore})
+            console.log(updatedPlayersScore)
+            return Object.assign({}, state, {game:updatedPlayersScore})
         case UPDATE_QUESTION_INDEX:
             const newGameQuestionsIndex = Object.assign({}, state.game, {currentQuestion: action.currentQuestion})
             return Object.assign({}, state, {game:newGameQuestionsIndex})

@@ -3,7 +3,6 @@ import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
 
 export function openGame(props) {
-    console.log(props)
     const openGames = props.availableGames.map((game, idx)=>
         <li key={idx}>
             Game ID: {game.id}
