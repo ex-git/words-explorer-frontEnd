@@ -10,7 +10,7 @@ export function liveGameCompleted(props) {
                 <section>
                     <h2>Score: {props.game.players[props.user].totalScore} {props.game.players[props.user].totalScore <2 ? 'point' : 'points'} + {props.game.players[props.user].bonus} bonus {props.game.players[props.user].totalScore <2 ? 'point' : 'points'}</h2>
                     <div>
-                        <h3>Result staticstic</h3>
+                        <h3>Result Statistic</h3>
                         <p>Total {props.game.questions.length} {props.game.questions.length <2 ? 'question': 'questions'}</p>
                         <p>You answered {props.game.players[props.user].totalAnswered} {props.game.questions.length <2 ? 'question': 'questions'} and {props.game.players[props.user].totalScore} {props.game.players[props.user].totalScore <2 ? 'answer is' : 'answers are'} correct
                         <br></br>{props.game.players[props.user].bonus} {props.game.players[props.user].bonus <2 ? 'correct answer' : 'correct answeres'} submitted faster than all other players

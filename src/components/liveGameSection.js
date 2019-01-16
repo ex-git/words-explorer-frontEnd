@@ -40,7 +40,9 @@ export class liveGameSection extends React.Component {
                         }
                         else {
                             this.props.dispatch(calculateScore())
-                            this.props.dispatch(updateGame('completed'))
+                            setTimeout(function(){
+                                this.props.dispatch(updateGame('completed'))
+                            }.bind(this),2000) 
                         }
                     }
                 }
@@ -52,7 +54,10 @@ export class liveGameSection extends React.Component {
                     }
                     else {
                         this.props.dispatch(calculateScore())
-                        this.props.dispatch(updateGame('completed'))
+                        setTimeout(function(){
+                            this.props.dispatch(updateGame('completed'))
+                        }.bind(this),2000)
+                        
                     }
                 }
             }.bind(this),1000)
