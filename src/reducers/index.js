@@ -1,4 +1,4 @@
-import {UPDATE_TIMMER, UPDATE_QUESTION_INDEX, SUBMIT_ANSWER, CALCULATE_SCORE, UPDATE_STATUS, UPDATE_GAME} from '../actions'
+import {UPDATE_TIMEOUT, UPDATE_QUESTION_INDEX, SUBMIT_ANSWER, CALCULATE_SCORE, UPDATE_STATUS, UPDATE_GAME, JOIN_NEW_GAME, UPDATE_COUNTDOWN, EXIT_GAME} from '../actions'
 
 const initState = {
     availableGames: [
@@ -30,12 +30,13 @@ const initState = {
                 correctAnswer: 'H'}
                 ],
         currentQuestion:0,
-        timeleft:5,
+        timeOutUser:0,
         answerReceived: {},
-        players: {'maxwell':{onlineStatus:'yes',totalScore:0, totalAnswered:0, bonus:0}},
+        players: {},
         status: ''
     },
-    user: "maxwell"
+    user: {},
+    countDown: 3
 }
 
 export const wordsExplorerReducer  = (state=initState, action) => {
@@ -43,10 +44,19 @@ export const wordsExplorerReducer  = (state=initState, action) => {
         case UPDATE_GAME:
             const newGameStatus = Object.assign({}, state.game, {gameStatus:action.gameStatus})
             return Object.assign({}, state, {game:newGameStatus})
-        case UPDATE_TIMMER:
-            const newGameTimeleft = Object.assign({}, state.game, {timeleft:action.timeleft})
-            return Object.assign({}, state, {game:newGameTimeleft})
+        case UPDATE_COUNTDOWN:
+            return Object.assign({}, state, {countDown:action.countDown})
+        case UPDATE_TIMEOUT:
+            if(action.timeOut===0) {
+                const newtimeOutUser = Object.assign({}, state.game, {timeOutUser:action.timeOut})
+                return Object.assign({}, state, {game:newtimeOutUser})
+            }
+            else {
+                const newtimeOutUser = Object.assign({}, state.game, {timeOutUser:state.game.timeOutUser+1})
+                return Object.assign({}, state, {game:newtimeOutUser})
+            }
         case CALCULATE_SCORE:
+        console.log(state.game)
             let newPlayersWithScore = Object.assign({}, state.game.players)
             for (let idx of Object.keys(state.game.answerReceived)) {
                 for (let nameOfPlayer of Object.keys(state.game.players)) {
@@ -55,33 +65,29 @@ export const wordsExplorerReducer  = (state=initState, action) => {
                         newPlayersWithScore[nameOfPlayer].totalScore+=state.game.answerReceived[idx].filter(answer=>Object.keys(answer)[0] === nameOfPlayer)[0][nameOfPlayer].answer
                     }
                     //get bonus if player is the 1st one submitted the correct answer
-                    console.log(Object.keys(state.game.answerReceived[idx][0])[0], nameOfPlayer, state.game.answerReceived[idx][0][nameOfPlayer].answer)
                     Object.keys(state.game.answerReceived[idx][0])[0]===nameOfPlayer && state.game.answerReceived[idx][0][nameOfPlayer].answer===1 ? newPlayersWithScore[nameOfPlayer].bonus+=1 : newPlayersWithScore[nameOfPlayer].bonus+=0
                 }
             }
             const updatedPlayersScore = Object.assign({}, state.game, {players: newPlayersWithScore})
-            console.log(updatedPlayersScore)
             return Object.assign({}, state, {game:updatedPlayersScore})
         case UPDATE_QUESTION_INDEX:
             const newGameQuestionsIndex = Object.assign({}, state.game, {currentQuestion: action.currentQuestion})
             return Object.assign({}, state, {game:newGameQuestionsIndex})
         case SUBMIT_ANSWER:
             //prevent double submit
-            if(state.game.answerReceived[state.game.currentQuestion] && state.game.answerReceived[state.game.currentQuestion].find(answer=>Object.keys(answer)[0]===state.user)) {
+            if(state.game.answerReceived[state.game.currentQuestion] && state.game.answerReceived[state.game.currentQuestion].find(answer=>Object.keys(answer)[0]===state.user.name)) {
                 return state
             }
             else {
                 let newAnswerReceived
                 if (state.game.answerReceived[state.game.currentQuestion]) {
                     newAnswerReceived = Object.assign({}, state.game.answerReceived)
-                    newAnswerReceived[state.game.currentQuestion]= [...newAnswerReceived[state.game.currentQuestion], {[state.user]: {time: state.game.timeleft, answer: action.answer}}]
+                    newAnswerReceived[state.game.currentQuestion]= [...newAnswerReceived[state.game.currentQuestion], {[state.user.name]: {time: state.game.timeleft, answer: action.answer}}]
                 }
                 else {
                     newAnswerReceived = Object.assign({}, state.game.answerReceived)
-                    state.game.answerReceived[state.game.currentQuestion] = [{[state.user]: {time: state.game.timeleft, answer: action.answer}}]
+                    state.game.answerReceived[state.game.currentQuestion] = [{[state.user.name]: {time: state.game.timeleft, answer: action.answer}}]
                 }
-                // state.game.answerReceived[state.game.currentQuestion][state.user] = {[state.user]: {time: state.game.timeleft, answer: action.answer}}
-                // newAnswerReceived.push({[state.user]: {time: state.game.timeleft, answer: action.answer}})
                 const updatedAnswerReceived = Object.assign({}, state.game.answerReceived, newAnswerReceived)
                 const newGameAnswerReceived = Object.assign({}, state.game, {answerReceived: updatedAnswerReceived})
                 return Object.assign({}, state, {game:newGameAnswerReceived})
@@ -89,6 +95,22 @@ export const wordsExplorerReducer  = (state=initState, action) => {
         case UPDATE_STATUS:
             const newStatus = Object.assign({}, state.game, {status: action.status})
             return Object.assign({}, state, {game:newStatus})
+        case JOIN_NEW_GAME:
+            if (state.user.auth && state.user.auth==='Yes') {
+                const addUserGameId = Object.assign({}, state.user, {user: {currentGameId: action.user.gameId}})
+                const addUserToGame = Object.assign({}, state.game, {players: {[state.user.name]: {totalScore:0, totalAnswered:0, bonus:0}}})
+                return Object.assign({}, state, addUserGameId, {game: addUserToGame})
+            }
+            else {
+                const addUserGameId = Object.assign({}, state.user, {user: {name:action.user.name, auth: 'no', currentGameId: action.user.gameId}})
+                const addUserToGame = Object.assign({}, state.game, {players: {[action.user.name]: {totalScore:0, totalAnswered:0, bonus:0}}})
+                return Object.assign({}, state, addUserGameId, {game: addUserToGame})
+            }
+        case EXIT_GAME:
+            const removeUserGameId = Object.assign({}, state.user, {user: {currentGameId: null}})
+            const removeUserFromGame = Object.assign({}, state.game)
+            delete removeUserFromGame.players[state.user.name]
+            return Object.assign({}, state, removeUserGameId, {game: removeUserFromGame})
         default:
         return state
     }
