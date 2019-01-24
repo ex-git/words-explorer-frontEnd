@@ -1,0 +1,29 @@
+.wordResult {
+    min-width: 400px;
+    text-align: left
+}
+
+.speech {
+    margin-left: 5px;
+    color: #4a7d95
+}
+
+.example {
+    color: #225f73;
+    font-size: 18px;
+    display: block;
+    margin-left: 20px
+}
+
+.definition {
+    color: #265667
+}
+
+.mainWord {
+    color: #303336;
+    font-size: 34px
+}
+
+.add {
+    cursor: copy
+}

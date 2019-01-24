@@ -4,34 +4,38 @@ import {updateTimeOut, updateQuestionIndex, updateGame, updateCountdown, calcula
 
 export class liveGameQuestionResult extends React.Component {
     componentDidMount() {
-        let x = setInterval(function(){
+        this.props.dispatch(updateCountdown(3))
+        this.timmer = setInterval(function(){
             if (this.props.countDown > 0) {
                 this.props.dispatch(updateCountdown(this.props.countDown-1))
             }
             else {
+                clearInterval(this.timmer)
                 this.props.dispatch(updateTimeOut(0))
-                clearInterval(x)
             }
         }.bind(this), 1000)
         setTimeout(function(){
-            if(this.props.game.currentQuestion === this.props.game.questions.length-1) {
+            if(this.props.localCounter.currentQuestion === this.props.game.questions.length-1) {
                 this.props.dispatch(calculateScore())
                 this.props.dispatch(updateGame('completed'))
             }
             else {
-                this.props.dispatch(updateQuestionIndex(this.props.game.currentQuestion+1))
                 this.props.dispatch(updateGame('playing'))
+                this.props.dispatch(updateQuestionIndex(this.props.localCounter.currentQuestion+1))
             }
         }.bind(this),4000)
     }
+    componentWillUnmount(){
+        clearInterval(this.timmer)
+    }
     render () {
-        let nextQuestion = this.props.game.currentQuestion === this.props.game.questions.length-1? `This is the last question, score is coming up in ${this.props.countDown}s` : `Next question coming up in ${this.props.countDown}s`
+        let nextQuestion = this.props.localCounter.currentQuestion === this.props.game.questions.length-1? `This is the last question, score is coming up in ${this.props.countDown}s` : `Next question coming up in ${this.props.countDown}s`
         return (
             <div>
                     <section>
-                    <h2>Question {this.props.game.currentQuestion+1}</h2>
+                    <h2>Question {this.props.localCounter.currentQuestion+1}</h2>
                     <div>
-                        Correct answer is {this.props.game.questions[this.props.game.currentQuestion].correctAnswer}
+                        Correct answer is {this.props.game.questions[this.props.localCounter.currentQuestion].correctAnswer}
                     </div>
                     <div>
                         {nextQuestion}
@@ -45,9 +49,9 @@ export class liveGameQuestionResult extends React.Component {
 
 
 const mapStateToProps = state => ({
-    user: state.user,
-    game: state.game,
-    countDown: state.countDown
+    game: state.wordsExplorerReducer.game,
+    countDown: state.wordsExplorerReducer.countDown,
+    localCounter: state.wordsExplorerReducer.localCounter
 })
 
 export default connect(mapStateToProps)(liveGameQuestionResult)

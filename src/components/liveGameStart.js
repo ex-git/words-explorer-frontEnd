@@ -7,7 +7,7 @@ export function liveGameStart(props) {
     return (
         <div>
                 <section>
-                    <h2>Total {props.game.questions.length+1} questions, any one can start the game once you have all your friends joined</h2>
+                    <h2>Total {props.game.questions.length} questions, any one can start the game once you have all your friends joined</h2>
                     <div>
                         <button onClick={e=>props.dispatch(updateGame('playing'))}>Start</button>
                     </div>
@@ -18,7 +18,7 @@ export function liveGameStart(props) {
 
 
 const mapStateToProps = state => ({
-    game: state.game
+    game: state.wordsExplorerReducer.game
 })
 
 export default connect(mapStateToProps)(liveGameStart)

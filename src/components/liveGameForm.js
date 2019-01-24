@@ -1,23 +1,18 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {submitAnswer, updateStatus} from '../actions'
+import {submitAnswer} from '../actions'
 
 
 export class liveGameForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
-        let score = this.props.game.questions[this.props.game.currentQuestion].correctAnswer === this.answer.value ? 1: 0
+        let score = this.props.game.questions[this.props.localCounter.currentQuestion].correctAnswer === this.answer.value ? 1: 0
         if(this.props.countDown>0) {
             this.props.dispatch(submitAnswer(score))
         }        
     }
     render() {
-        if(this.props.game.timeleft=== '-') {
-            return <div>
-                {this.props.game.status}
-            </div>
-        }
-        else if (this.props.game.answerReceived[this.props.game.currentQuestion] && this.props.game.answerReceived[this.props.game.currentQuestion].find(answer=>answer[this.props.user.name])) {
+        if (this.props.game.answersReceived[this.props.localCounter.currentQuestion] && this.props.game.answersReceived[this.props.localCounter.currentQuestion].find(answer=>answer[this.props.userInfo.name])) {
             return <div>
                 You answer has been submitted, waiting for other players to complete
             </div>
@@ -25,8 +20,8 @@ export class liveGameForm extends React.Component {
         else {
             return <div>
                 <form onSubmit={e=>this.onSubmit(e)}>
-                    <label htmlFor="answer">A word start with "{this.props.game.questions[this.props.game.currentQuestion].correctAnswer[0]}"</label>
-                    <input id="answer" ref={input => (this.answer = input)}></input>
+                    <label htmlFor="answer">A word start with "{this.props.game.questions[this.props.localCounter.currentQuestion].correctAnswer[0]}"</label>
+                    <input id="answer" ref={input => this.answer = input}></input>
                     <button type="submit">Submit</button>
                 </form>
             </div>
@@ -35,9 +30,10 @@ export class liveGameForm extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    user: state.user,
-    game: state.game,
-    countDown: state.countDown
+    userInfo: state.wordsExplorerReducer.userInfo,
+    game: state.wordsExplorerReducer.game,
+    countDown: state.wordsExplorerReducer.countDown,
+    localCounter: state.wordsExplorerReducer.localCounter
 })
 
 export default connect(mapStateToProps)(liveGameForm)

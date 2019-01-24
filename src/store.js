@@ -1,3 +1,10 @@
-import {createStore} from 'redux';
+import {createStore, combineReducers} from 'redux';
 import {wordsExplorerReducer} from './reducers';
-export default createStore(wordsExplorerReducer);
+import {reducer as formReducer} from 'redux-form'
+
+export default createStore(
+    combineReducers({
+        wordsExplorerReducer,
+        form: formReducer
+    })
+);

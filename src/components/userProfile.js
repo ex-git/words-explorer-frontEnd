@@ -2,20 +2,19 @@ import React from 'react'
 import {reduxForm, Field, SubmissionError, focus} from 'redux-form';
 import {required, nonEmpty, startEndWithSpace} from './formValidation'
 import formInput from './formInput'
-
-
 import {USERS_ENDPOINT} from './config'
+import {Redirect} from 'react-router-dom'
+import {connect} from 'react-redux'
 
-export class signUp extends React.Component {
+export class userProfile extends React.Component {
     onSubmit(values) {
         return fetch(USERS_ENDPOINT, {
-        // return fetch('//words-explorer-api.herokuapp.com/api/users', {
-            method: 'POST',
-            body: JSON.stringify(values),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+                method: 'PUT',
+                body: JSON.stringify(values),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
             .then(res => {
                 if (!res.ok) {
                     if (
@@ -48,11 +47,15 @@ export class signUp extends React.Component {
                 
     }
     render() {
+        console.log(this.props.userInfo)
+        if(this.props.userInfo.auth ===undefined || this.props.userInfo.auth === 'no') {
+            return <Redirect exact to="/" />
+        }
         let successMessage;
         if (this.props.submitSucceeded) {
             successMessage = (
                 <div className="message message-success">
-                    You have been successfully registered
+                    Your profile has been successfully updated
                 </div>
             );
         }
@@ -92,8 +95,14 @@ export class signUp extends React.Component {
     }
 }
 
+const mapStateToProps = state => ({
+  userInfo: state.wordsExplorerReducer.userInfo
+})
+
+userProfile = connect(mapStateToProps)(userProfile)
+
 export default reduxForm({
-    form: 'Sign Up',
+    form: 'userProfile',
     onSubmitFail: (errors, dispatch) =>
-        dispatch(focus('Sign Up', Object.keys(errors)[0]))
-})(signUp)
+        dispatch(focus('userProfile', Object.keys(errors)[0]))
+})(userProfile)

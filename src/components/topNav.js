@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import {connect} from 'react-redux'
 
 export function topNav(props) {
-  const navItems = props.links.map((link, idx)=>
+  const navItems = props.links.filter(link=> link.status === 1).map((link, idx)=>
     <li key={idx}>
       <Link to={link.url}>
         {link.name}
@@ -20,7 +20,7 @@ export function topNav(props) {
 }
 
 const mapStateToProps = state => ({
-  links: state.links
+  links: state.wordsExplorerReducer.links
 })
 
 export default connect(mapStateToProps)(topNav)

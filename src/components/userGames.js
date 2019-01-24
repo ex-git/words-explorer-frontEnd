@@ -1,11 +1,10 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {USERS_ENDPOINT} from './config'
-import {updateRanks} from '../actions'
+import {GAMES_ENDPOINT} from './config'
 
-export class ranking extends React.Component {
+export class userGames extends React.Component {
     componentDidMount(){
-        fetch(USERS_ENDPOINT)
+        fetch(GAMES_ENDPOINT)
         .then(res=>{
             if(res.ok) {
                 return res.json()
@@ -26,12 +25,9 @@ export class ranking extends React.Component {
         </li>
     )
     return (
-        <section>
-            <h3>Glonbal Ranking</h3>
-            <ol>
-                {rank}
-            </ol>
-        </section>
+        <div>
+            
+        </div>
     )
     }
     

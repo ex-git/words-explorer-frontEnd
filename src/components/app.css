@@ -3,8 +3,7 @@
   }
   
   body {
-    font-family: "Open Sans",
-    sans-serif; 
+    font-family: "Times New Roman", Times, serif;
     font-size: 18px;
     color: #000;
     text-align: center;
@@ -21,7 +20,7 @@
   
   section {
     min-height: 200px;
-    padding: 6% 0;
+    padding: 2% 0;
     background-color: #999;
   }
   
@@ -31,4 +30,8 @@
   
   section li{
     list-style: none
+  }
+
+  h1 {
+    font-size: 48px
   }
