@@ -5,7 +5,7 @@ import {withRouter} from 'react-router-dom'
 export function liveGameCompleted(props) {
     let exit = (e) => {
         e.preventDefault()
-        props.dispatch(exitGame())
+        props.dispatch(exitGame(props.match.params.gameId))
         props.history.push('/')
     }
     return (

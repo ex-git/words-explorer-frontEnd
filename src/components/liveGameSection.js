@@ -1,11 +1,11 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import LiveGameForm from './liveGameForm'
-import {updateTimeOut, updateGame, updateCountdown} from '../actions'
+import {updateGame, updateCountdown} from '../actions'
 
 export class liveGameSection extends React.Component {
     componentDidMount() {
-        this.props.dispatch(updateCountdown(10))
+        this.props.dispatch(updateCountdown(30))
         this.timmer = setInterval(function(){
             if (this.props.countDown===0) {
                 clearInterval(this.timmer)

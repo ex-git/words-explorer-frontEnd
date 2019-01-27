@@ -3,6 +3,8 @@ import {reduxForm, Field, SubmissionError, focus} from 'redux-form';
 import {required, nonEmpty, startEndWithSpace} from './formValidation'
 import formInput from './formInput'
 import {authUser, updateLink} from '../actions'
+import {Redirect} from 'react-router-dom'
+import {connect} from 'react-redux'
 
 import {LOGIN_ENDPOINT} from './config'
 
@@ -31,7 +33,9 @@ export class logIn extends React.Component {
             .then(resJSON => {
                 const user = {
                     name: resJSON.validUser.userName,
-                    auth: 'yes'
+                    auth: 'yes',
+                    scores: resJSON.validUser.scores,
+                    id: resJSON.validUser['_id']
                 }
                 this.props.dispatch(authUser(user))
                 this.props.dispatch(updateLink('auth'))
@@ -48,12 +52,8 @@ export class logIn extends React.Component {
     }
     render() {
         let successMessage;
-        if (this.props.submitSucceeded) {
-            successMessage = (
-                <div className="message message-success">
-                    You have been logged in!
-                </div>
-            );
+        if (this.props.userInfo.auth=== 'yes') {
+            return <Redirect to="/" />
         }
         let errorMessage;
         if (this.props.error) {
@@ -75,7 +75,7 @@ export class logIn extends React.Component {
                         validate={[required, nonEmpty, startEndWithSpace]}
                     />
                     <Field name="password"
-                        type="text"
+                        type="password"
                         component={formInput}
                         label="Password"
                         validate={[required, nonEmpty, startEndWithSpace]}
@@ -90,6 +90,12 @@ export class logIn extends React.Component {
         )
     }
 }
+
+const mapStateToProps = state => ({
+    userInfo : state.wordsExplorerReducer.userInfo
+})
+
+logIn = connect(mapStateToProps)(logIn)
 
 export default reduxForm({
     form: 'login',

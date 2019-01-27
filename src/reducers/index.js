@@ -1,4 +1,4 @@
-import {UPDATE_TIMEOUT,
+import {
     UPDATE_QUESTION_INDEX,
     SUBMIT_ANSWER,
     CALCULATE_SCORE,
@@ -15,11 +15,13 @@ import {UPDATE_TIMEOUT,
     AUTH_USER,
     UPDATE_LINK,
     UPDATE_RANKS,
-    FETCH_GAME
+    FETCH_GAME,
+    QUIT_GAME,
+    LOG_OUT,
+    UPDATE_USER_GAMES,
 } from '../actions'
 
-import {GAMES_ENDPOINT} from '../components/config'
-import { clearInterval } from 'timers';
+import {GAMES_ENDPOINT, USERS_ENDPOINT, LOGOUT_ENDPOINT} from '../components/config'
 
 const initState = {
     availableGames: [],
@@ -28,16 +30,6 @@ const initState = {
             name:"Log In",
             url:"/login",
             status: 1
-        },
-        {   
-            name:"Log out",
-            url:"/logout",
-            status: 0
-        },
-        {   
-            name:"Profile",
-            url:"/profile",
-            status: 0
         }
     ],
     ranks: [
@@ -49,18 +41,18 @@ const initState = {
         id: null,
         questions: [],
         answersReceived: {},
-        players: {},
+        players: [],
         
     },
     localCounter: {
-        currentQuestion:0,
-        status: ''
+        currentQuestion:0
     },
     userInfo: {},
     countDown: 3,
     wordResult: {},
     gamePool: {},
     newGame: {},
+    userGames: [],
     gameResult: {totalQuestion: 0, totalScore:0, totalAnswered:0, bonus:0}
 }
 
@@ -81,20 +73,13 @@ export const wordsExplorerReducer  = (state=initState, action) => {
             return state
         case UPDATE_COUNTDOWN:
             return Object.assign({}, state, {countDown:action.countDown})
-        // case UPDATE_TIMEOUT:
-        //     this.timmer = setInterval(function(){
-        //         if(state.countDown===0) {
-        //             clearInterval(this.timmer)
-        //         }
-        //         return Object.assign({}, state, {countDown:state.countDown-1})
-        //     }, 1000) 
         case UPDATE_LINK:
             if(action.status === 'auth') {
                 let updateLink = [
                     {   
-                        name:"Log In",
-                        url:"/login",
-                        status: 0
+                        name:"Create Game",
+                        url:"/creategame",
+                        status: 1
                     },
                     {   
                         name:"Profile",
@@ -115,16 +100,6 @@ export const wordsExplorerReducer  = (state=initState, action) => {
                         name:"Log In",
                         url:"/login",
                         status: 1
-                    },
-                    {   
-                        name:"Profile",
-                        url:"/profile",
-                        status: 0
-                    },
-                    {   
-                        name:"Log out",
-                        url:"/logout",
-                        status: 0
                     }
                 ]
                 return Object.assign({}, state, {links: updateLink})
@@ -135,36 +110,54 @@ export const wordsExplorerReducer  = (state=initState, action) => {
         case CALCULATE_SCORE:
             let gameResult = {totalQuestion: 0, totalScore:0, totalAnswered:0, bonus:0}
             gameResult.totalQuestion = state.game.questions.length
+            console.log(state.game.answersReceived)
             for (let idx of Object.keys(state.game.answersReceived)) {
                 if (state.game.answersReceived[idx].find(answer=>Object.keys(answer)[0]=== state.userInfo.name)) {
-                    gameResult.totalAnswered = state.gameResult.totalAnswered+1
-                    gameResult.totalScore = state.gameResult.totalScore += state.game.answersReceived[idx].filter(player=> Object.keys(player)[0] ===state.userInfo.name)[0][state.userInfo.name].answer
+                    gameResult.totalAnswered +=1
+                    gameResult.totalScore += state.game.answersReceived[idx].filter(player=> Object.keys(player)[0] ===state.userInfo.name)[0][state.userInfo.name].answer
                     if(Object.keys(state.game.answersReceived[idx][0])[0]===state.userInfo.name && state.game.answersReceived[idx][0][state.userInfo.name].answer===1) {
-                        gameResult.bonus = state.gameResult.bonus+1
+                        gameResult.bonus +=1
                     }
                 }
             }
-            // const updatedPlayersScore = Object.assign({}, state.game, {players: newPlayersWithScore})
+            let totalScore = gameResult.totalScore + parseInt(state.userInfo.scores)
+            console.log(totalScore)
+            fetch(USERS_ENDPOINT, {
+                credentials: 'include',
+                method: "PUT",
+                body: JSON.stringify({userName: state.userInfo.name,
+                    scores: totalScore}),
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                }
+            })
+            .then(()=>
+                    Promise.resolve()
+            )
             return Object.assign({}, state, {gameResult})
 
         case UPDATE_QUESTION_INDEX:
             let newLocalCounter = Object.assign({}, state.localCounter)
             newLocalCounter.currentQuestion = action.currentQuestion
-            // console.log(newLocalCounter, Object.assign({}, state, newLocalCounter))
-            // const newGameQuestionsIndex = Object.assign({}, state.localCounter, {currentQuestion: action.currentQuestion})
             return Object.assign({}, state, {localCounter: newLocalCounter})
         case UPDATE_RANKS:
             return Object.assign({}, state, {ranks:action.ranks})
+        case UPDATE_USER_GAMES:
+            return Object.assign({}, state, {userGames: action.games})
+        case LOG_OUT:
+            fetch(LOGOUT_ENDPOINT, {
+                credentials: 'include',
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                }
+            })
+            .then(res=>{
+                return Promise.resolve()
+            })
+            return Object.assign({}, state, {userInfo: {}})
         case FETCH_GAME:
-        // if (action.game.gameId === state.game.gameId) {
-        //     if(action.game.answersReceived.length === state.game.answersReceived.length) {
-
-        //     }
-        //     else if (Object.keys(action.game.players).join() === Object.keys(state.game.answersReceived).join()) {
-
-        //     }
-        // }
-        return Object.assign({}, state, {game:action.game})
+            return Object.assign({}, state, {game:action.game})
         case SUBMIT_ANSWER:
             //prevent double submit
             if(state.game.answersReceived[state.localCounter.currentQuestion] && state.game.answersReceived[state.localCounter.currentQuestion].find(answer=>Object.keys(answer)[0]===state.userInfo.name)) {
@@ -191,9 +184,6 @@ export const wordsExplorerReducer  = (state=initState, action) => {
                 .then(()=>
                         Promise.resolve()
                 )
-                return state
-
-                
                 const updatedanswersReceived = Object.assign({}, state.game.answersReceived, newanswersReceived)
                 const newGameanswersReceived = Object.assign({}, state.game, {answersReceived: updatedanswersReceived})
                 return Object.assign({}, state, {game:newGameanswersReceived})
@@ -220,37 +210,15 @@ export const wordsExplorerReducer  = (state=initState, action) => {
         case REMOVE_QUESTION:
             return Object.assign({}, state, {gamePool: [...state.gamePool.filter(question=> question.question!==action.question)]})
         case JOIN_NEW_GAME:
-            if (state.userInfo.name !== undefined) {
-                let newPlayersList
-                if (state.game.players.length >0 && !(state.userInfo.name in state.game.players)) {
-                    newPlayersList = {players: [...state.game.players, state.userInfo.name]}
-                }
-                else {
-                    newPlayersList = {players: [state.userInfo.name]}
-                }
+            return state
+        case EXIT_GAME:
+            if(Object.keys(state.game).length>0) {
                 fetch(GAMES_ENDPOINT+'/'+action.gameId, {
                     credentials: 'include',
                     method: "PUT",
-                    body: JSON.stringify(newPlayersList),
-                    headers: {
-                        "Content-Type": "application/json; charset=utf-8",
-                    }
-                })
-                .then(()=>
-                     Promise.resolve()
-                )
-            }
-            else {
-                return state
-            }
-        case EXIT_GAME:
-            if(Object.keys(state.game).length>0) {
-                fetch(GAMES_ENDPOINT+'/'+state.game.gameId, {
-                    credentials: 'include',
-                    method: "PUT",
                     body: JSON.stringify({gameStatus: 'open',
-                        answersReceived: [],
-                        player: []}
+                        answersReceived: {},
+                        players: []}
                         ),
                     headers: {
                         "Content-Type": "application/json; charset=utf-8",
@@ -260,7 +228,39 @@ export const wordsExplorerReducer  = (state=initState, action) => {
                     return Promise.resolve()
                 })
             }
-            return state
+            return Object.assign({}, state, {
+                localCounter: {
+                    currentQuestion:0
+                }
+            })
+        case QUIT_GAME:
+            if(Object.keys(state.game).length>0) {
+                let joinStatus= {join: 'no'}
+                fetch(GAMES_ENDPOINT+'/'+action.gameId, {
+                    credentials: 'include',
+                    method: "PUT",
+                    body: JSON.stringify(joinStatus),
+                    headers: {
+                        "Content-Type": "application/json; charset=utf-8",
+                    }
+                })
+                .then(()=> {
+                    return Promise.resolve()
+                })
+            }
+            return Object.assign({}, state, {
+                localCounter: {
+                    currentQuestion:0
+                },
+                game: {
+                    gameStatus: 'open',
+                    id: null,
+                    questions: [],
+                    answersReceived: {},
+                    players: [],
+                    
+                }
+            })
         default:
             return state
         

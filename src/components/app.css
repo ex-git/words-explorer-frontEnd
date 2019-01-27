@@ -8,15 +8,10 @@
     color: #000;
     text-align: center;
     line-height: 2em;
+    height: 100%;
+    width: 100%
   }
   
-  .mainHead, .mainNav {
-    display: inline-block
-  }
-  
-  .mainNav li {
-    display: inline-block
-  }
   
   section {
     min-height: 200px;

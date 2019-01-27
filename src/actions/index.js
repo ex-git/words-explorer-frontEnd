@@ -19,6 +19,11 @@ export const authUser = (user)=> ({
     type: AUTH_USER,
     user
 })
+export const QUIT_GAME = 'QUIT_GAME'
+export const quitGame = (gameId)=> ({
+    type: QUIT_GAME,
+    gameId
+})
 export const EXIT_GAME = 'EXIT_GAME'
 export const exitGame = (gameId)=> ({
     type: EXIT_GAME,
@@ -87,4 +92,13 @@ export const UPDATE_RANKS = 'UPDATE_RANKS'
 export const updateRanks = (ranks)=> ({
     type: UPDATE_RANKS,
     ranks
+})
+export const UPDATE_USER_GAMES = 'UPDATE_USER_GAMES'
+export const updateUserGames = (games)=> ({
+    type: UPDATE_USER_GAMES,
+    games
+})
+export const LOG_OUT = 'LOG_OUT'
+export const logOut = ()=> ({
+    type: LOG_OUT
 })

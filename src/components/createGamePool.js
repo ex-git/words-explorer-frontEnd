@@ -35,8 +35,8 @@ export class createGamePool extends React.Component {
             alert(`Game created, ID: ${resJSON.gameId}`)
 
         })
-        .catch(err => {
-            console.log(err.message)
+        .catch((err) => {
+            alert(err.message)
         }); 
     }
     render(){

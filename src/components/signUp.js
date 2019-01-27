@@ -76,7 +76,7 @@ export class signUp extends React.Component {
                         validate={[required, nonEmpty, startEndWithSpace]}
                     />
                     <Field name="password"
-                        type="text"
+                        type="password"
                         component={formInput}
                         label="Password"
                         validate={[required, nonEmpty, startEndWithSpace]}

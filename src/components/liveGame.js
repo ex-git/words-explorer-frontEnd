@@ -5,63 +5,132 @@ import LiveGameStart from './liveGameStart'
 import LiveGameCompleted from './liveGameCompleted'
 import LiveGameQuestionResult from './liveGameQuestionResult' 
 import {GAMES_ENDPOINT} from './config'
-import {fetchGame, joinNewGame, exitGame} from '../actions'
+import {fetchGame, exitGame, quitGame, updateQuestionIndex, authUser, updateLink} from '../actions'
 import {withRouter} from 'react-router-dom'
 export class liveGame extends React.Component {
-    componentWillMount(){
-        fetch(GAMES_ENDPOINT+'/' + this.props.match.params.gameId)
+    checkGameStatus() {
+        console.log('checkin game status')
+        fetch(GAMES_ENDPOINT+'/' + this.props.match.params.gameId, {
+            credentials: 'include',
+            method: 'GET'
+          })
         .then(res=>{
             if(res.ok) {
+                console.log('receive game ok')
                 return res.json()
             }
-            return Promise.reject()
+            else if(res.status===401) {
+                this.props.dispatch(authUser({}))
+                this.props.dispatch(updateLink('unAuth'))
+                alert('You got kicked out due to authentication error')
+                return this.props.history.push('/')
+            }
         })
-        .then(resJSON=>{
-            this.props.dispatch(fetchGame(resJSON))
-        })
+        .then(resJSON=> this.props.dispatch(fetchGame(resJSON)))
         .catch(err=>
-            {alert('Unable to join this game')
-            this.props.history.push('/')}
+            this.props.history.push('/')
         )
     }
-    componentDidMount(){
-        this.fetchGame = setInterval(function(){
-            if(this.props.game.gameStatus !== 'completed') {
-                fetch(GAMES_ENDPOINT+'/' + this.props.match.params.gameId)
-                .then(res=>{
-                    if(res.ok) {
-                        return res.json()
-                    }
-                    return Promise.reject()
-                })
-                .then(resJSON=>{
-                    this.props.dispatch(fetchGame(resJSON))
-                })
-                .catch(err=>
-                    {alert('Unable to join this game')
-                    this.props.history.push('/')}
-                )
+    joinGame() {
+        console.log('joining game')
+        fetch(GAMES_ENDPOINT+'/'+this.props.match.params.gameId, {
+            credentials: 'include',
+            method: "PUT",
+            body: JSON.stringify({join:'yes'}),
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
             }
-            else {
+        })
+        .then(res=> {
+            if (res.ok) {
+                return res.json()
+            }
+            else if(res.status===401) {
+                this.props.dispatch(authUser({}))
+                this.props.dispatch(updateLink('unAuth'))
+                alert('You got kicked out due to authentication error')
+                return this.props.history.push('/')
+            }
+        })
+        .then(resJSON=> {
+            if(resJSON.players !== undefined && !resJSON.players.includes(this.props.userInfo.name) && resJSON.gameStatus !== 'open') {
                 clearInterval(this.fetchGame)
+                this.props.history.push('/')
+                alert('Game is currently playing by other players, try again later')
+            } 
+            else {
+                this.props.dispatch(fetchGame(resJSON))
             }
-        }.bind(this), 1000)
+        })
+        .catch(
+            ()=>null                
+        )
+    }
+    componentWillMount(){
+        if(this.props.userInfo.name !== undefined && this.props.userInfo.auth==='yes') {
+            this.joinGame()
+            return this.props.dispatch(updateQuestionIndex(0))
+        }
+        else {
+            alert('Oops, you got kicked out.')
+            this.props.dispatch(authUser({}))
+            this.props.dispatch(updateLink('unAuth'))
+            return this.props.history.push('/')
+        }
+        
+    }
+
+    // unloadListener(e) {
+    //     e.preventDefault()
+    //     let exit = this.props.dispatch(quitGame())
+    //     e.returnValue = exit
+    //     window.event.returnValue = exit
+    //     return exit
+    // };
+
+    componentDidMount(){
+        // window.addEventListener('beforeunload', this.unloadListener.bind(this));
+        
+        // this.fetchGame = setInterval(function(){
+        //     if(this.props.game.gameStatus !== 'completed') {
+        //         this.checkGameStatus()
+        //     }
+        //     else {
+        //         clearInterval(this.fetchGame)
+        //     }
+        // }.bind(this), 1000)
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.userInfo.name !== this.props.userInfo.name) {
-            // this.props.dispatch(exitGame(prevProps.userInfo.name))
-            this.props.dispatch(joinNewGame(this.props.match.params.gameId))
+        if (prevProps.game.players !==undefined && !prevProps.game.players.includes(this.props.userInfo.name) && this.props.game.players !==undefined && !this.props.game.players.includes(this.props.userInfo.name)) {
+            clearInterval(this.fetchGame)
+            console.log('let me in')
+            return this.joinGame()
+        }
+        else if(prevProps.game.players !==undefined && !prevProps.game.players.includes(this.props.userInfo.name) && this.props.game.players !==undefined  && this.props.game.players.includes(this.props.userInfo.name)) {
+            setTimeout(function(){
+                console.log('ok, runing check')
+                this.fetchGame = setInterval(function(){
+                    if(this.props.game.gameStatus !== 'completed') {
+                        console.log('run checking game')
+                        return this.checkGameStatus()
+                    }
+                    else {
+                        clearInterval(this.fetchGame)
+                    }
+                }.bind(this), 1000)
+            }.bind(this), 1000)
         }
     }
     componentWillUnmount(){
         clearInterval(this.fetchGame)
-        this.props.dispatch(exitGame(this.props.match.params.gameId))
+        // window.removeEventListener('beforeunload', this.unloadListener.bind(this));
+        // if (Object.keys(this.props.game).length >0 && this.props.game.gameStatus==='open') {
+            this.props.dispatch(quitGame(this.props.match.params.gameId))
     }
 
     render() {
-            
-        if (this.props.game.gameStatus==='open') {
+        if (this.props.game && Object.keys(this.props.game).length>0 && this.props.game.gameStatus==='open') {
             let players
             if (this.props.game.players.length>0) {
                 players = (this.props.game.players).map((player,idx)=>
@@ -82,7 +151,7 @@ export class liveGame extends React.Component {
                 </div>
             )
         }
-        else if (this.props.game.gameStatus==='pause') {
+        else if (this.props.game && Object.keys(this.props.game).length>0 && this.props.game.gameStatus==='pause') {
             return (
                 <div>
                     <LiveGameQuestionResult />
@@ -95,7 +164,7 @@ export class liveGame extends React.Component {
                 </div>
             )
         }
-        else if (this.props.game.gameStatus==='playing') {
+        else if (this.props.game && Object.keys(this.props.game).length>0 && this.props.game.gameStatus==='playing') {
             return (
                 <div>
                     <LiveGameSection />
@@ -108,10 +177,10 @@ export class liveGame extends React.Component {
                 </div>
             )
         }
-        else if (this.props.game.gameStatus==='completed') {
+        else if (this.props.game && Object.keys(this.props.game).length>0 && this.props.game.gameStatus==='completed') {
             setTimeout(function(){
-                this.props.dispatch(exitGame())
-            }.bind(this), 4000)
+                this.props.dispatch(exitGame(this.props.match.params.gameId))
+            }.bind(this), 5000)
             return (
                 <div>
                     <LiveGameCompleted />
@@ -120,7 +189,8 @@ export class liveGame extends React.Component {
         }
         else {
             return (
-                'nothing'
+                <div>
+                </div>
             )
         }
         }

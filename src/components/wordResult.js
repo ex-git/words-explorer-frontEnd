@@ -1,8 +1,7 @@
 import React from 'react'
 import './wordResult.css'
 
-import {updateWordResult, updateGamePool} from '../actions'
-import CreateGamePool from './createGamePool'
+import {updateGamePool} from '../actions'
 import {connect} from 'react-redux'
 
 export class wordResult extends React.Component{
@@ -18,7 +17,6 @@ export class wordResult extends React.Component{
         }
     }
     render() {
-        console.log(this.props.wordResult)
         if (this.props.wordResult.word) {
             //filter null result and map them
             const results = this.props.wordResult.results.filter(result=> result!==null).map((result, idx)=>{

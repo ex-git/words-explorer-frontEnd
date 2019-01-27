@@ -4,7 +4,7 @@ import {required, nonEmpty} from './formValidation'
 import formInput from './formInput'
 import {WORDS_ENDPOINT} from './config'
 import {connect} from 'react-redux'
-import {updateWordResult, updateGamePool} from '../actions'
+import {updateWordResult} from '../actions'
 import WordResult from './wordResult'
 import CreateGamePool from './createGamePool'
 
