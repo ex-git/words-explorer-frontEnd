@@ -15,7 +15,8 @@ export class createGamePool extends React.Component {
             method: 'POST',
             body: JSON.stringify(this.props.gamePool),
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json; charset=utf-8",
+                'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
             }
         })
         .then(res => {
