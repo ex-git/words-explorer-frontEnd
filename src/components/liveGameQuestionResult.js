@@ -22,7 +22,10 @@ export class liveGameQuestionResult extends React.Component {
             }
             else {
                 this.props.dispatch(updateGame('playing'))
-                this.props.dispatch(updateQuestionIndex(this.props.localCounter.currentQuestion+1))
+                setTimeout(function(){
+                    this.props.dispatch(updateQuestionIndex(this.props.localCounter.currentQuestion+1))
+                }.bind(this), 1000)
+                
             }
         }.bind(this),4000)
     }

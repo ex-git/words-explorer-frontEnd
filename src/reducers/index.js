@@ -32,10 +32,7 @@ const initState = {
             status: 1
         }
     ],
-    ranks: [
-        // {name: "Maxwell", score: 999},
-        // {name: "Lily", score: 354},
-    ],
+    ranks: [],
     game: {
         gameStatus: 'open',
         id: null,

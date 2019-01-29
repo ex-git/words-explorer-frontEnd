@@ -21,7 +21,7 @@ export class ranking extends React.Component {
         )
     }
     render() {
-        const rank = this.props.ranks.slice(0,5).map((rank, idx)=>
+        const rank = this.props.ranks.sort((a,b)=>b.score - a.score).slice(0,5).map((rank, idx)=>
         <li key={idx}>
             <span className='explorerName'>{rank.name}</span> - score: {rank.score}
         </li>

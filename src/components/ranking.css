@@ -1,6 +1,6 @@
 .topExplorer h2 {
     padding: 10px;
-    text-shadow: 2px 1px 5px rgba(255, 0, 0, .4);
+    text-shadow: 1px 1px 1px rgba(255, 0, 0, .4);
     background-color: rgba(255,0,0,0.1);
     color: #000
 }
