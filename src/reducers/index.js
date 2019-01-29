@@ -79,7 +79,7 @@ export const wordsExplorerReducer  = (state=initState, action) => {
                         status: 1
                     },
                     {   
-                        name:"Profile",
+                        name:`Profile (Score: ${state.userInfo.scores})`,
                         url:"/profile",
                         status: 1
                     },
