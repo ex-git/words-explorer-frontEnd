@@ -36,7 +36,7 @@ export class logIn extends React.Component {
                     scores: resJSON.validUser.scores,
                     id: resJSON.validUser['_id']
                 }
-                document.cookie = `authToken=${resJSON.authToken};max-age=600000;HttpOnly`
+                document.cookie = `authToken=${resJSON.authToken};max-age=600000`
                 this.props.dispatch(authUser(user))
                 this.props.dispatch(updateLink('auth'))
             })
