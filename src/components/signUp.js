@@ -16,7 +16,6 @@ export class signUp extends React.Component {
             }
             })
             .then(res => {
-                console.log(res)
                 if(res.ok || res.status===422) {
                     return res.json()
                 }
