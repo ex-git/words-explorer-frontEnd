@@ -5,11 +5,7 @@ import formInput from './formInput'
 import {authUser, updateLink} from '../actions'
 import {Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
-
-import cookie from 'react-cookies'
-
 import './logIn.css'
-
 import {LOGIN_ENDPOINT} from './config'
 
 export class logIn extends React.Component {
@@ -40,8 +36,7 @@ export class logIn extends React.Component {
                     scores: resJSON.validUser.scores,
                     id: resJSON.validUser['_id']
                 }
-                console.log(resJSON)
-                cookie.save('authToken', resJSON.authToken, { path: '/', maxAge: 3600000, httpOnly: true});
+                document.cookie = `authToken=${resJSON.authToken};max-age=600000;HttpOnly`
                 this.props.dispatch(authUser(user))
                 this.props.dispatch(updateLink('auth'))
             })

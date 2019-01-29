@@ -21,7 +21,7 @@ import {
     UPDATE_USER_GAMES,
 } from '../actions'
 
-import {GAMES_ENDPOINT, USERS_ENDPOINT, LOGOUT_ENDPOINT} from '../components/config'
+import {GAMES_ENDPOINT, USERS_ENDPOINT} from '../components/config'
 
 const initState = {
     availableGames: [],
@@ -146,16 +146,7 @@ export const wordsExplorerReducer  = (state=initState, action) => {
         case UPDATE_USER_GAMES:
             return Object.assign({}, state, {userGames: action.games})
         case LOG_OUT:
-            fetch(LOGOUT_ENDPOINT, {
-                credentials: 'include',
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8"
-                }
-            })
-            .then(res=>{
-                return Promise.resolve()
-            })
+            document.cookie = `authToken='';max-age=0`
             return Object.assign({}, state, {
                 userInfo: {},
                 wordResult: {},
