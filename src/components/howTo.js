@@ -28,6 +28,8 @@ export function howTo(props) {
                     Game ID is the unique and it is used to join game
                     <br></br>
                     Compete with your friends and be one of the top words explorer!
+                    <br></br>
+                    Or you can login with Demo account: demo, password: demo to try it out
                 </p>
                 <Link to='/signup'>
                     Get Started
