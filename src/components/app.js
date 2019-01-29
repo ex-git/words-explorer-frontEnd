@@ -34,7 +34,7 @@ export class app extends React.Component {
             scores: resJSON.validUser.scores,
             id: resJSON.validUser['_id']
           }
-          document.cookie = `authToken=${resJSON.authToken};max-age=600000`
+          document.cookie = `authToken=${resJSON.authToken};max-age=600000;hostOnly="false"`
           this.props.dispatch(authUser(user))
           return this.props.dispatch(updateLink('auth'))
         })
