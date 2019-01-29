@@ -12,6 +12,7 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import {connect} from 'react-redux'
 import './app.css'
 import './mobile.css'
+import cookie from 'react-cookies'
 
 export class app extends React.Component {
     refreshJWT() {
@@ -35,6 +36,7 @@ export class app extends React.Component {
             scores: resJSON.validUser.scores,
             id: resJSON.validUser['_id']
           }
+          cookie.save('authToken', resJSON.authToken, { path: '/', maxAge: 3600000, httpOnly: true});
           this.props.dispatch(authUser(user))
           return this.props.dispatch(updateLink('auth'))
         })
