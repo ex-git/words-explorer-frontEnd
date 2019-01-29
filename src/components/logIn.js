@@ -5,13 +5,13 @@ import formInput from './formInput'
 import {authUser, updateLink} from '../actions'
 import {Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
+import './logIn.css'
 
 import {LOGIN_ENDPOINT} from './config'
 
 export class logIn extends React.Component {
     onSubmit(values) {
         return fetch(LOGIN_ENDPOINT, {
-        // return fetch('//words-explorer-api.herokuapp.com/api/users', {
             method: 'POST',
             credentials: 'include',
             body: JSON.stringify(values),
@@ -51,23 +51,24 @@ export class logIn extends React.Component {
                 
     }
     render() {
-        let successMessage;
         if (this.props.userInfo.auth=== 'yes') {
             return <Redirect to="/" />
         }
-        let errorMessage;
+        let errorMessage = (
+            <div className="message">Tesing?  Use 'demo', and password 'demo'</div>
+        );
         if (this.props.error) {
             errorMessage = (
-                <div className="message message-error">{this.props.error}</div>
+                <div className="message message-error">{this.props.error === 'Unauthorized' ? 'Incorrect User Name or Password' : this.props.error}</div>
             );
         }
         return (
-            <section>
+            <section className="logIn">
                 <form onSubmit={this.props.handleSubmit(values =>
                     this.onSubmit(values)
                 )}>
-                {successMessage}
-                {errorMessage}
+                <legend>Sign in to your account</legend>
+                    {errorMessage}
                     <Field name="userName"
                         type="text"
                         component={formInput}
@@ -80,11 +81,13 @@ export class logIn extends React.Component {
                         label="Password"
                         validate={[required, nonEmpty, startEndWithSpace]}
                     />
+
                     <button
                         type="submit"
                         disabled={this.props.pristine || this.props.submitting}>
                         Submit
                     </button>
+
                 </form>     
             </section>
         )

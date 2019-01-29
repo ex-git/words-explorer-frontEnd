@@ -1,32 +1,38 @@
-* {
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: "Times New Roman", Times, serif;
-    font-size: 18px;
-    color: #000;
-    text-align: center;
-    line-height: 2em;
-    height: 100%;
-    width: 100%
-  }
-  
-  
-  section {
-    min-height: 200px;
-    padding: 2% 0;
-    background-color: #999;
-  }
-  
-  section:nth-child(even) {
-    background-color: #ddd;
-  }
-  
-  section li{
-    list-style: none
-  }
+@import url('https://fonts.googleapis.com/css?family=Muli');
 
-  h1 {
-    font-size: 48px
-  }
+/* CSS reset */
+html, body, div, span, h1, h2, pre, a, img, ol, ul, li, section, footer, .resultAndPool {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+  box-sizing: border-box;
+}
+  
+html, body, #root, main, .mainPage {
+  height: 100%
+}
+
+body {
+  font-family: 'Muli', sans-serif;
+  font-size: 18px;
+  color: #000;
+  text-align: center;
+  line-height: 2em;
+  background-color: #fafbfa
+}
+
+section {
+  padding: 2% 0;
+}
+
+section li{
+  list-style: none
+}
+
+legend, h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: bold
+}

@@ -2,42 +2,39 @@ import React from 'react'
 import {reduxForm, Field, SubmissionError, focus} from 'redux-form';
 import {required, nonEmpty, startEndWithSpace} from './formValidation'
 import formInput from './formInput'
-
+import {withRouter} from 'react-router-dom'
 
 import {USERS_ENDPOINT} from './config'
 
 export class signUp extends React.Component {
     onSubmit(values) {
         return fetch(USERS_ENDPOINT, {
-        // return fetch('//words-explorer-api.herokuapp.com/api/users', {
             method: 'POST',
             body: JSON.stringify(values),
             headers: {
                 'Content-Type': 'application/json'
             }
-        })
-            .then(res => {
-                if (!res.ok) {
-                    if (
-                        res.headers.has('content-type') &&
-                        res.headers
-                            .get('content-type')
-                            .startsWith('application/json')
-                    ) {
-                        // It's a nice JSON error returned by us, so decode it
-                        return res.json().then(err => Promise.reject(err));
-                    }
-                    // It's a less informative error returned by express
-                    return Promise.reject({
-                        code: res.status,
-                        message: res.statusText
-                    });
-                }
-                return;
             })
-            //add redirect here
-            .then(() => console.log('Submitted with values', values))
+            .then(res => {
+                console.log(res)
+                if(res.ok || res.status===422) {
+                    return res.json()
+                }
+                return Promise.reject({
+                    code: res.status,
+                    message: res.statusText
+                });
+            })
+            .then(resJSON => {
+                if(resJSON.status ===422) {
+                    return Promise.reject(resJSON);
+                }
+                setTimeout(function(){
+                    return this.props.history.push('/login')
+                }.bind(this), 2000)
+            })
             .catch(err => {
+                // console.log(err)
                 const {message} = err;
                 return Promise.reject(
                     new SubmissionError({
@@ -63,12 +60,13 @@ export class signUp extends React.Component {
             );
         }
         return (
-            <section>
+            <section className='signUp'>
                 <form onSubmit={this.props.handleSubmit(values =>
                     this.onSubmit(values)
                 )}>
-                {successMessage}
-                {errorMessage}
+                <legend>Create your account</legend>
+                    {successMessage}
+                    {errorMessage}
                     <Field name="userName"
                         type="text"
                         component={formInput}
@@ -92,6 +90,8 @@ export class signUp extends React.Component {
     }
 }
 
+
+signUp = withRouter(signUp)
 export default reduxForm({
     form: 'Sign Up',
     onSubmitFail: (errors, dispatch) =>

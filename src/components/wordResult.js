@@ -1,5 +1,4 @@
 import React from 'react'
-import './wordResult.css'
 
 import {updateGamePool} from '../actions'
 import {connect} from 'react-redux'
@@ -53,13 +52,16 @@ export class wordResult extends React.Component{
             })
             return (
                 <div className="wordResult">
-                    <h1>{this.props.wordResult.word}</h1>
+                    <h2>Definition</h2>
                     {results}
                 </div>
             )
         }
         else {
-            return ""
+            return <div className="wordResult">
+                    <h2>Definition</h2>
+                    Oops, no definition to show.
+                </div>
         }
     }
     

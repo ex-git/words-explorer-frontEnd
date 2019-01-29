@@ -1,0 +1,16 @@
+
+.openGame li {
+    font-size: 24px
+}
+
+.openGame a {
+    font-size: 16px;
+    background-color:#373f46;
+    color: #fff;
+    border-radius: 5px;
+    padding: 4px;
+    margin-left: 5px;
+    text-transform: capitalize;
+    text-decoration: none;
+    vertical-align: top
+}

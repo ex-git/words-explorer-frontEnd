@@ -1,0 +1,19 @@
+.joinGame {
+    width: 300px;
+    margin: 20px auto;
+    text-align: center
+}
+.joinGame button {
+    font-size: 14px;
+    background-color:#373f46;
+    color: #fff;
+    border-radius: 5px;
+    margin-top: 20px;
+    padding: 10px 10px;
+    text-transform: capitalize
+}
+
+.joinGame button:hover {
+    background-color: #8B0000;
+    cursor: pointer;
+}

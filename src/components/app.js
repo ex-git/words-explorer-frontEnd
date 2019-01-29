@@ -1,5 +1,4 @@
 import React from 'react'
-import './app.css'
 import MainHeader from './mainHeader'
 import MainPage from './mainPage'
 import SignUp from './signUp'
@@ -7,11 +6,12 @@ import Login from './logIn'
 import LiveGame from './liveGame'
 import Profile from './userProfile'
 import CreateGame from './createGame'
-
 import {REFRESH_ENDPOINT} from './config'
 import {authUser, updateLink} from '../actions'
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import {connect} from 'react-redux'
+import './app.css'
+import './mobile.css'
 
 export class app extends React.Component {
     refreshJWT() {
@@ -20,7 +20,6 @@ export class app extends React.Component {
           method: 'GET'
         })
         .then(res => {
-            console.log('iam on it')
             if (res.ok) {
               return res.json()
             }
@@ -45,13 +44,13 @@ export class app extends React.Component {
     }
 
     componentWillMount() {
+        //refresh JWT at the begining
         this.refreshJWT()
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.userInfo.auth === undefined && this.props.userInfo.auth !== undefined && this.props.userInfo.auth==='yes') {
             // When we are logged in, refresh the auth token periodically
-            console.log('updating')
             this.startPeriodicRefresh();
         }
         else if (prevProps.userInfo.auth !== undefined && prevProps.userInfo.auth === 'yes' && this.props.userInfo.auth === undefined) {
@@ -61,13 +60,14 @@ export class app extends React.Component {
     }
     
     componentWillUnmount() {
+        //stop JWT refresh timmer if leaving the page
         this.stopPeriodicRefresh();
     }
     
     startPeriodicRefresh() {
-        // 45 mins fresh JWT
+        // 45 mins fresh JWT period, cookie and JWT was set to expire after 60 mins
         this.refreshInterval = setInterval(() => this.refreshJWT(),
-         1 * 60 * 1000) 
+         45 * 60 * 1000) 
     }
     
     stopPeriodicRefresh() {
@@ -77,7 +77,6 @@ export class app extends React.Component {
     render(){
         return (
             <BrowserRouter>
-                <div>
                     <main role="main">
                         <MainHeader />
                         <Switch>
@@ -89,7 +88,6 @@ export class app extends React.Component {
                             <Route exact path='/game/:gameId' component={LiveGame} />
                         </Switch>
                     </main>
-                </div>
             </BrowserRouter>
           )
     }

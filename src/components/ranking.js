@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {USERS_ENDPOINT} from './config'
 import {updateRanks} from '../actions'
+import './ranking.css'
 
 export class ranking extends React.Component {
     componentDidMount(){
@@ -20,17 +21,17 @@ export class ranking extends React.Component {
         )
     }
     render() {
-        const rank = this.props.ranks.map((rank, idx)=>
+        const rank = this.props.ranks.slice(0,5).map((rank, idx)=>
         <li key={idx}>
-            {rank.name} - {rank.score}
+            <span className='explorerName'>{rank.name}</span> - score: {rank.score}
         </li>
     )
     return (
-        <section>
-            <h3>Glonbal Ranking</h3>
-            <ol>
+        <section className='topExplorer'>
+            <h2>Top 5 Words Explorer</h2>
+            <ul className='top5'>
                 {rank}
-            </ol>
+            </ul>
         </section>
     )
     }

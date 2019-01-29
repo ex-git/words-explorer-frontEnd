@@ -7,16 +7,16 @@ import LiveGameQuestionResult from './liveGameQuestionResult'
 import {GAMES_ENDPOINT} from './config'
 import {fetchGame, exitGame, quitGame, updateQuestionIndex, authUser, updateLink} from '../actions'
 import {withRouter} from 'react-router-dom'
+import './liveGame.css'
+
 export class liveGame extends React.Component {
     checkGameStatus() {
-        console.log('checkin game status')
         fetch(GAMES_ENDPOINT+'/' + this.props.match.params.gameId, {
             credentials: 'include',
             method: 'GET'
           })
         .then(res=>{
             if(res.ok) {
-                console.log('receive game ok')
                 return res.json()
             }
             else if(res.status===401) {
@@ -31,8 +31,8 @@ export class liveGame extends React.Component {
             this.props.history.push('/')
         )
     }
+
     joinGame() {
-        console.log('joining game')
         fetch(GAMES_ENDPOINT+'/'+this.props.match.params.gameId, {
             credentials: 'include',
             method: "PUT",
@@ -51,6 +51,10 @@ export class liveGame extends React.Component {
                 alert('You got kicked out due to authentication error')
                 return this.props.history.push('/')
             }
+            else if(res.status===500) {
+                alert("We can't find this game")
+                return this.props.history.push('/')
+            }
         })
         .then(resJSON=> {
             if(resJSON.players !== undefined && !resJSON.players.includes(this.props.userInfo.name) && resJSON.gameStatus !== 'open') {
@@ -67,11 +71,14 @@ export class liveGame extends React.Component {
         )
     }
     componentWillMount(){
+
+        //if logged in, send user name to API to join game. Reset question index to 0
         if(this.props.userInfo.name !== undefined && this.props.userInfo.auth==='yes') {
             this.joinGame()
             return this.props.dispatch(updateQuestionIndex(0))
         }
         else {
+            //any error or user refresh tab, kick out player to make sure other players have the same timmer
             alert('Oops, you got kicked out.')
             this.props.dispatch(authUser({}))
             this.props.dispatch(updateLink('unAuth'))
@@ -80,39 +87,16 @@ export class liveGame extends React.Component {
         
     }
 
-    // unloadListener(e) {
-    //     e.preventDefault()
-    //     let exit = this.props.dispatch(quitGame())
-    //     e.returnValue = exit
-    //     window.event.returnValue = exit
-    //     return exit
-    // };
-
-    componentDidMount(){
-        // window.addEventListener('beforeunload', this.unloadListener.bind(this));
-        
-        // this.fetchGame = setInterval(function(){
-        //     if(this.props.game.gameStatus !== 'completed') {
-        //         this.checkGameStatus()
-        //     }
-        //     else {
-        //         clearInterval(this.fetchGame)
-        //     }
-        // }.bind(this), 1000)
-    }
-
     componentDidUpdate(prevProps) {
+        //try to log user in to the game
         if (prevProps.game.players !==undefined && !prevProps.game.players.includes(this.props.userInfo.name) && this.props.game.players !==undefined && !this.props.game.players.includes(this.props.userInfo.name)) {
             clearInterval(this.fetchGame)
-            console.log('let me in')
             return this.joinGame()
         }
         else if(prevProps.game.players !==undefined && !prevProps.game.players.includes(this.props.userInfo.name) && this.props.game.players !==undefined  && this.props.game.players.includes(this.props.userInfo.name)) {
             setTimeout(function(){
-                console.log('ok, runing check')
                 this.fetchGame = setInterval(function(){
                     if(this.props.game.gameStatus !== 'completed') {
-                        console.log('run checking game')
                         return this.checkGameStatus()
                     }
                     else {
@@ -123,10 +107,9 @@ export class liveGame extends React.Component {
         }
     }
     componentWillUnmount(){
+        //clear timmer before existing game
         clearInterval(this.fetchGame)
-        // window.removeEventListener('beforeunload', this.unloadListener.bind(this));
-        // if (Object.keys(this.props.game).length >0 && this.props.game.gameStatus==='open') {
-            this.props.dispatch(quitGame(this.props.match.params.gameId))
+        this.props.dispatch(quitGame(this.props.match.params.gameId))
     }
 
     render() {
@@ -138,9 +121,9 @@ export class liveGame extends React.Component {
             )
             }
             return (
-                <div>
+                <div className='liveGame'>
                     <LiveGameStart />
-                    <section>
+                    <section className='playerStatus'>
                         <div>
                             <p>Total player <span>{this.props.game.players.length}</span></p>
                             <ul>
@@ -153,9 +136,9 @@ export class liveGame extends React.Component {
         }
         else if (this.props.game && Object.keys(this.props.game).length>0 && this.props.game.gameStatus==='pause') {
             return (
-                <div>
+                <div className='liveGame'>
                     <LiveGameQuestionResult />
-                    <section>
+                    <section className='playerStatus'>
                         <div>
                             <p>Total player <span>{Object.keys(this.props.game.players).length}</span></p>
                             <p>Submitted <span>{this.props.game.answersReceived[this.props.localCounter.currentQuestion]? this.props.game.answersReceived[this.props.localCounter.currentQuestion].length : 0}</span></p>
@@ -166,9 +149,9 @@ export class liveGame extends React.Component {
         }
         else if (this.props.game && Object.keys(this.props.game).length>0 && this.props.game.gameStatus==='playing') {
             return (
-                <div>
+                <div className='liveGame'>
                     <LiveGameSection />
-                    <section>
+                    <section className='playerStatus'>
                         <div>
                             <p>Total player <span>{Object.keys(this.props.game.players).length}</span></p>
                             <p>Submitted <span>{(Object.keys(this.props.game.answersReceived).length>0 && this.props.game.answersReceived[this.props.localCounter.currentQuestion])? this.props.game.answersReceived[this.props.localCounter.currentQuestion].length : 0}</span></p>
@@ -182,14 +165,14 @@ export class liveGame extends React.Component {
                 this.props.dispatch(exitGame(this.props.match.params.gameId))
             }.bind(this), 5000)
             return (
-                <div>
+                <div className='liveGame'>
                     <LiveGameCompleted />
                 </div>
             )
         }
         else {
             return (
-                <div>
+                <div className='liveGame'>
                 </div>
             )
         }

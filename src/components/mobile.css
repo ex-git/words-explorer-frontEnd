@@ -1,0 +1,60 @@
+
+@media (orientation: portrait) {
+    .intro {
+        position:static;
+        background-image: url('pics/hero.jpg');
+        background-size: contain;
+        background-position: top center;
+        background-repeat: no-repeat;
+    }
+    .intro .introText {
+        max-width: 100%;
+        text-align: center;
+        margin-top: 65%;
+        position: static;
+        min-height: 400px;
+        right: 5%;
+        top: 30%;
+        color: #000;
+        font-size: 24px;
+        text-shadow: #323232 0 1px 3px
+    }
+    .howTo {
+        padding: 5%;
+    }
+
+    .liveGame {
+        width: 95%
+    }
+}
+
+@media screen and (max-width: 760px) {
+    .intro {
+        height: 100%
+    }
+    .intro .introText {
+        font-size: 20px;
+        top: 10%;
+    }
+}
+
+@media screen and (max-width: 540px) {
+    
+    .mainHead {
+        margin-bottom: 40px;
+    }
+    .mainHead nav {
+        position: static;
+    }
+    
+    .mainHead h1 {
+        position: static;
+    }
+
+    .resultAndPool .wordResult, .resultAndPool .wordsPool {
+        width: 90%;
+        display: block;
+        margin: auto;
+        margin-top: 50px
+    }
+}

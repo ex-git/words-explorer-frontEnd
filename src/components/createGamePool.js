@@ -2,7 +2,6 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {removeQuestion, updateWordResult, resetGamePool} from '../actions'
 import {GAMES_ENDPOINT} from './config'
-import './createGamePool.css'
 
 export class createGamePool extends React.Component {
     handleRemove(e) {
@@ -42,10 +41,11 @@ export class createGamePool extends React.Component {
     render(){
         if (Object.keys(this.props.gamePool).length>0) {
             let words = this.props.gamePool.map((word, idx)=>{
-                return <li key={idx}>{word.correctAnswer}: <span className="remove" onClick={e=>this.handleRemove(e)}>{word.question}</span></li>
+                return <li key={idx}><span className='correctAnswer'>{word.correctAnswer}</span><span className="question remove" onClick={e=>this.handleRemove(e)}>{word.question}</span></li>
             })
             return (
                 <div className="wordsPool">
+                <h2>Question Pools</h2>
                     <ul>
                         {words}
                     </ul>
@@ -56,7 +56,11 @@ export class createGamePool extends React.Component {
             )
         }
         else {
-            return ""
+            return <div className="wordsPool">
+                        Search word and add definition to the pool here.
+                        <br></br>
+                        Definition will be the question~
+                </div>
         }
     } 
 }

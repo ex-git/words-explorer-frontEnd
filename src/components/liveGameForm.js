@@ -18,7 +18,7 @@ export class liveGameForm extends React.Component {
             </div>
         }
         else {
-            return <div>
+            return <div className='liveGameAnswer'>
                 <form onSubmit={e=>this.onSubmit(e)}>
                     <label htmlFor="answer">A word start with "{this.props.game.questions[this.props.localCounter.currentQuestion].correctAnswer[0]}"</label>
                     <input id="answer" ref={input => this.answer = input}></input>

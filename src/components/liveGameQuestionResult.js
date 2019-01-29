@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {updateTimeOut, updateQuestionIndex, updateGame, updateCountdown, calculateScore} from '../actions'
 
 export class liveGameQuestionResult extends React.Component {
+    //change countdown after showing result for 3 seconds
     componentDidMount() {
         this.props.dispatch(updateCountdown(3))
         this.timmer = setInterval(function(){
@@ -31,17 +32,15 @@ export class liveGameQuestionResult extends React.Component {
     render () {
         let nextQuestion = this.props.localCounter.currentQuestion === this.props.game.questions.length-1? `This is the last question, score is coming up in ${this.props.countDown}s` : `Next question coming up in ${this.props.countDown}s`
         return (
-            <div>
-                    <section>
-                    <h2>Question {this.props.localCounter.currentQuestion+1}</h2>
-                    <div>
-                        Correct answer is {this.props.game.questions[this.props.localCounter.currentQuestion].correctAnswer}
-                    </div>
-                    <div>
-                        {nextQuestion}
-                    </div>
-                </section>
-            </div>
+            <section>
+                <h2>Question {this.props.localCounter.currentQuestion+1}</h2>
+                <div>
+                    Correct answer is: {this.props.game.questions[this.props.localCounter.currentQuestion].correctAnswer}
+                </div>
+                <div>
+                    {nextQuestion}
+                </div>
+            </section>
         )
     }
     

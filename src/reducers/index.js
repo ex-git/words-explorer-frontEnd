@@ -102,7 +102,11 @@ export const wordsExplorerReducer  = (state=initState, action) => {
                         status: 1
                     }
                 ]
-                return Object.assign({}, state, {links: updateLink})
+                return Object.assign({}, state, {
+                    links: updateLink,
+                    wordResult: {},
+                    gamePool: {}
+                })
             }
             break
         case AUTH_USER:
@@ -110,7 +114,6 @@ export const wordsExplorerReducer  = (state=initState, action) => {
         case CALCULATE_SCORE:
             let gameResult = {totalQuestion: 0, totalScore:0, totalAnswered:0, bonus:0}
             gameResult.totalQuestion = state.game.questions.length
-            console.log(state.game.answersReceived)
             for (let idx of Object.keys(state.game.answersReceived)) {
                 if (state.game.answersReceived[idx].find(answer=>Object.keys(answer)[0]=== state.userInfo.name)) {
                     gameResult.totalAnswered +=1
@@ -120,8 +123,7 @@ export const wordsExplorerReducer  = (state=initState, action) => {
                     }
                 }
             }
-            let totalScore = gameResult.totalScore + parseInt(state.userInfo.scores)
-            console.log(totalScore)
+            let totalScore = gameResult.totalScore + gameResult.bonus + parseInt(state.userInfo.scores)
             fetch(USERS_ENDPOINT, {
                 credentials: 'include',
                 method: "PUT",
@@ -134,7 +136,9 @@ export const wordsExplorerReducer  = (state=initState, action) => {
             .then(()=>
                     Promise.resolve()
             )
-            return Object.assign({}, state, {gameResult})
+            let newUserInfo = Object.assign({}, state.userInfo)
+            newUserInfo.totalScore+=1
+            return Object.assign({}, state, {gameResult}, {userInfo: newUserInfo})
 
         case UPDATE_QUESTION_INDEX:
             let newLocalCounter = Object.assign({}, state.localCounter)
@@ -155,7 +159,11 @@ export const wordsExplorerReducer  = (state=initState, action) => {
             .then(res=>{
                 return Promise.resolve()
             })
-            return Object.assign({}, state, {userInfo: {}})
+            return Object.assign({}, state, {
+                userInfo: {},
+                wordResult: {},
+                gamePool: {}
+            })
         case FETCH_GAME:
             return Object.assign({}, state, {game:action.game})
         case SUBMIT_ANSWER:

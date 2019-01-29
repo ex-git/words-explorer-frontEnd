@@ -5,7 +5,10 @@ import {connect} from 'react-redux'
 import {updateOpenGame} from '../actions'
 import {GAMES_ENDPOINT} from './config'
 
+import './openGame.css'
+
 export class openGame extends React.Component {
+    //get open game from API every 2 sec
     componentDidMount(){
         this.fetchUpdate = setInterval(function(){
             fetch(GAMES_ENDPOINT)
@@ -29,12 +32,12 @@ export class openGame extends React.Component {
     render() {
         const openGames = this.props.availableGames.map((game, idx)=>
         <li key={idx}>
-            Game ID: {game} >
+            #: {game}
             <Link to={`/game/${game}`}>Join</Link>
         </li>)
         return (
-            <section>
-            <h3>Opening game</h3>
+            <section className='openGame'>
+            <h2>Opening game</h2>
                 <ul>
                     {openGames}
                 </ul>

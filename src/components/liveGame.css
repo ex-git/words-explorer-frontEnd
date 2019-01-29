@@ -1,0 +1,53 @@
+.liveGame{
+    width: 80%;
+    margin: 30px auto;
+    background-color: #016087;
+    border-radius: 10px;
+    color: #fff;
+    text-shadow: #323232 0 1px 3px;
+    font-size: 22px;
+    position: relative;
+}
+
+.liveGame h2{
+    font-size: 30px;
+    padding: 2%
+}
+
+.liveGame button{
+    font-size: 18px;
+    background-color:#56198B;
+    color: #fff;
+    border-radius: 5px;
+    margin-top: 20px;
+    padding: 10px 20px;
+}
+
+.liveGame button:hover{
+    background-color: #8B0000;
+    cursor: pointer;
+}
+
+.liveGame .preGame {
+    padding-top: 50px
+}
+
+.liveGame .playerStatus {
+    margin: 20px auto;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.liveGame .question {
+    font-size: 28px;
+    margin: 30px auto;
+}
+
+.liveGame .liveGameAnswer input {
+    margin-bottom: 10px
+}
+
+.liveGame .liveGameAnswer button {
+    display: block;
+    margin: auto
+}

@@ -24,11 +24,16 @@ export class userGames extends React.Component {
             {rank.name} - {rank.score}
         </li>
     )
-    return (
-        <div>
-            
-        </div>
-    )
+    if(rank.length >0) {
+        return (
+            <div>
+                <ul>
+                    {rank}
+                </ul>
+            </div>
+        )
+    }
+    else {}
     }
     
 }

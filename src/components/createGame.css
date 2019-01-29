@@ -1,0 +1,79 @@
+.resultAndPool {
+    width:100%;
+    margin:auto;
+    box-sizing: border-box
+}
+
+.resultAndPool .wordResult, .resultAndPool .wordsPool{
+    width: 41%;
+    margin: 5% 2%;
+    border: 1px solid green;
+    border-radius: 5%;
+    padding: 2%;
+    display: inline-block;
+    min-height: 60%;
+    vertical-align: top;
+    text-align: left
+}
+
+.resultAndPool .wordResult:hover, .resultAndPool .wordsPool:hover{
+    box-shadow: 2px 2px 40px 2px rgba(0, 0, 255, .1);
+}
+
+.resultAndPool .wordsPool .correctAnswer{
+    font-size: 24px;
+    font-weight: bold;
+    display: block;
+    text-transform: capitalize
+}
+
+.resultAndPool .wordsPool .question{
+    margin-left: 25px;
+}
+
+.remove:hover {
+    text-decoration: line-through;
+    cursor: no-drop;
+    box-shadow: 2px 2px 40px 2px rgba(255, 0, 0, 0.5);
+}
+
+.resultAndPool h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-shadow: rgba(255, 0, 0, 0.5) 0 0 90px;
+    margin-bottom: 15px
+}
+
+.wordResult .speech {
+    margin-left: 5px;
+    color: #4a7d95
+}
+
+.wordResult .example {
+    color: #225f73;
+    font-size: 18px;
+    display: block;
+    margin-left: 20px
+}
+
+.wordResult .definition {
+    color: #265667;
+}
+
+.wordResult .mainWord {
+    color: #303336;
+    font-size: 34px;
+    font-weight: bold;
+    text-transform: capitalize
+}
+
+.wordResult .add {
+    cursor: copy
+}
+
+.wordResult .add:hover {
+    cursor: copy;
+
+    box-shadow: 2px 2px 40px 2px rgba(0, 0, 255, .5);
+}

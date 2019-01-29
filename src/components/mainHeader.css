@@ -1,16 +1,77 @@
-
-header {
-    height: 100%;
+.intro {
+    position: relative;
+    height: 85%;
     background-image: url('pics/hero.jpg');
+    background-size: cover;
+    background-position: top center;
+    background-repeat: no-repeat;
 }
+
+.intro .introText {
+    text-align: right;
+    max-width: 40%;
+    position: absolute;
+    right: 5%;
+    top: 30%;
+    color: #fff;
+    font-size: 24px;
+    text-shadow: #323232 0 1px 3px;
+}
+
+.intro .introText .signup {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 5px;
+    background-color: #6c8784;
+    padding: 10px 20px;
+    text-decoration: none;
+    line-height: 2;
+    text-transform: uppercase;
+    text-shadow: #323232 0 1px 3px
+}
+
+.intro .introText .signup:hover {
+    background-color: #8B0000;
+    cursor: pointer;
+}
+
 .mainHead {
-    width: 100%;
+    position: relative;
+    height: 60px;
+}
+
+.mainHead a{
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .mainHead h1 {
-    display: inline-block
+    line-height: 2;
+    font-size: 24px;
+    display:inline-block;
 }
 
-.mainNav li {
-    display: inline-block
+.mainHead nav {
+    position: absolute;
+    right: 3%;
+    top:0
+}
+
+.mainHead nav a {
+    line-height: 3;
+    font-weight: bold;
+    font-size: 16x;
+    display:inline-block;
+}
+
+.mainHead h1 {
+    position: absolute;
+    top:0;
+    left: 3%
+}
+
+.mainHead nav ul li {
+    display: inline-block;
+    margin-right: 20px;
 }

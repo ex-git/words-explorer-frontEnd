@@ -6,6 +6,7 @@ import {USERS_ENDPOINT, GAMES_ENDPOINT} from './config'
 import {connect} from 'react-redux'
 import {updateUserGames, authUser, updateLink, logOut} from '../actions'
 import {withRouter} from 'react-router-dom'
+import './userProfile.css'
 
 export class userProfile extends React.Component {
     onSubmit(values) {
@@ -26,8 +27,6 @@ export class userProfile extends React.Component {
                 }
                 return;
             })
-            //add redirect here
-            .then(() => console.log('Submitted with values', values))
             .catch(err => {
                 const {message} = err;
                 return Promise.reject(
@@ -83,7 +82,7 @@ export class userProfile extends React.Component {
         })
         .then(res => {
             if (!res.ok) {
-                console.log('err')
+                alert('Something wrong, try again later')
             }
             this.props.dispatch(authUser({}))
             this.props.dispatch(updateLink('unAuth'))
@@ -96,31 +95,34 @@ export class userProfile extends React.Component {
     }
 
     handleDelete(e) {
-        let gameDatabaseId = e.target.dataset.value
-        fetch(GAMES_ENDPOINT+'/'+gameDatabaseId, {
-            credentials: 'include',
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(res => {
-            if (!res.ok) {
-                return Promise.reject({
-                    code: res.status,
-                    message: res.statusText
-                });
-            }
-            return this.fetchGamesByUser()
-        })
-        .catch(() => {
-            return null
-        })
+        if(window.confirm('If you delete this game, it will be gone forever')) {
+            let gameDatabaseId = e.target.dataset.value
+            fetch(GAMES_ENDPOINT+'/'+gameDatabaseId, {
+                credentials: 'include',
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => {
+                if (!res.ok) {
+                    return Promise.reject({
+                        code: res.status,
+                        message: res.statusText
+                    });
+                }
+                return this.fetchGamesByUser()
+            })
+            .catch(() => {
+                return null
+            })
+        }
+        
     }
 
     render() {
         let gamesByMe = this.props.userGames.map((game, idx)=>
-            <li key={idx} data-value={game._id}>
+            <li key={idx} data-value={game._id} className='remove'>
                 Game ID: {game.gameId} - {game.questions.length>1 ? 'Words' : 'Word'}: {game.questions.map(question=>question.correctAnswer).join(', ')}
             </li>)
         let successMessage;
@@ -138,37 +140,33 @@ export class userProfile extends React.Component {
             );
         }
         return (
-            <div>
-                <section>
-                <form onSubmit={this.props.handleSubmit(values =>
-                    this.onSubmit(values)
-                )}>
-                {successMessage}
-                {errorMessage}
-                    <Field name="userName"
-                        type="text"
-                        component={formInput}
-                        label="User Name"
-                        validate={[required, nonEmpty, startEndWithSpace]}
-                    />
-                    <Field name="password"
-                        type="password"
-                        component={formInput}
-                        label="Password"
-                        validate={[required, nonEmpty, startEndWithSpace]}
-                    />
-                    <button
-                        type="submit"
-                        disabled={this.props.pristine || this.props.submitting}>
-                        Submit
-                    </button>
-                </form>
-                <button className="deleteAccount" onClick={this.deleteAccount}>Delete My Account</button>
-            </section>
-            <section>
-                <h2>Games under my account:</h2>
+            <div className='profile'>
+                <section className='userProfile'>
+                    <form onSubmit={this.props.handleSubmit(values =>
+                        this.onSubmit(values)
+                    )}>
+                    <legend>Motify Your Account Info</legend>   
+                        {successMessage}
+                        {errorMessage}
+                        <Field name="password"
+                            type="password"
+                            component={formInput}
+                            label="Password"
+                            validate={[required, nonEmpty, startEndWithSpace]}
+                        />
+                        <button
+                            type="submit"
+                            disabled={this.props.pristine || this.props.submitting}>
+                            Submit
+                        </button>
+                    </form>
+                    <button className="deleteAccount" onClick={this.deleteAccount}>Delete My Account</button>
+                </section>
+            <section className='myGames'>
+                <h2>Delete games under my account:</h2>
+                <p className='message'>We do not allow to edit the game to keep each game as a unique story. However, you can delete it instead</p>
                 <ul onClick={e=> this.handleDelete(e)}>
-                    {gamesByMe}
+                    {gamesByMe.length> 0 ? gamesByMe : <li>You do not have any game yet!</li>}
                 </ul>
             </section>
             </div>

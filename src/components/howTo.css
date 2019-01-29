@@ -1,0 +1,11 @@
+.howTo {
+    font-size: 24px;
+    background-color: #016087;
+    margin-top: 5%;
+    color: #fff;
+    padding: 2%;
+}
+
+.howTo a {
+    text-decoration: none
+}

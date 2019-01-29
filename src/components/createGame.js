@@ -7,15 +7,18 @@ import {connect} from 'react-redux'
 import {updateWordResult} from '../actions'
 import WordResult from './wordResult'
 import CreateGamePool from './createGamePool'
+import './createGame.css'
 
 export class createGame extends React.Component {
+
     onSubmit(values) {
+        //get word definition from API
         return fetch(WORDS_ENDPOINT+"/"+values.word, {
             credentials: 'include',
             method: 'GET'
             })
             .then(res => {
-                if (!res.status===200) {
+                if (res.status!==200) {
                     return Promise.reject({
                         code: res.status,
                         message: res.statusText
@@ -36,6 +39,7 @@ export class createGame extends React.Component {
                 }
                 else {
                     this.props.dispatch(updateWordResult(resJSON))
+                    return values.word=''
                 }
             })
             .catch(err => {
@@ -56,8 +60,7 @@ export class createGame extends React.Component {
             );
         }
         return (
-            <section>
-                <WordResult />
+            <section className='createGame'>
                 <form onSubmit={this.props.handleSubmit(values =>
                     this.onSubmit(values)
                 )}>
@@ -65,16 +68,19 @@ export class createGame extends React.Component {
                     <Field name="word"
                         type="text"
                         component={formInput}
-                        label="words"
+                        label="Word"
                         validate={[required, nonEmpty]}
                     />
                     <button
-                        type="Search"
+                        type="submit"
                         disabled={this.props.pristine || this.props.submitting}>
-                        Submit
+                        Get Definition
                     </button>
                 </form>
-                <CreateGamePool />     
+                <div className='resultAndPool'>
+                    <WordResult />
+                    <CreateGamePool />   
+                </div>  
             </section>
         )
     }
@@ -82,7 +88,8 @@ export class createGame extends React.Component {
 
 const mapStateToProps = state => ({
     wordResult: state.wordsExplorerReducer.wordResult,
-    gamePool: state.wordsExplorerReducer.gamePool
+    gamePool: state.wordsExplorerReducer.gamePool,
+    userInfo: state.wordsExplorerReducer.userInfo
 })
 
 createGame = connect(mapStateToProps)(createGame)
