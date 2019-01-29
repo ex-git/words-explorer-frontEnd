@@ -6,7 +6,7 @@ import {submitAnswer} from '../actions'
 export class liveGameForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
-        let score = this.props.game.questions[this.props.localCounter.currentQuestion].correctAnswer === this.answer.value ? 1: 0
+        let score = this.props.game.questions[this.props.localCounter.currentQuestion].correctAnswer.toLowerCase() === this.answer.value.trim().toLowerCase() ? 1: 0
         if(this.props.countDown>0) {
             this.props.dispatch(submitAnswer(score))
         }        
