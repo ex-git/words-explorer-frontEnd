@@ -38,8 +38,7 @@ export class createGame extends React.Component {
                     throw Error(result)
                 }
                 else {
-                    this.props.dispatch(updateWordResult(resJSON))
-                    return values.word=''
+                    return this.props.dispatch(updateWordResult(resJSON))
                 }
             })
             .catch(err => {
