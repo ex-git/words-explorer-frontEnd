@@ -38,33 +38,36 @@ export class userProfile extends React.Component {
                 
     }
     fetchGamesByUser() {
-        fetch(GAMES_ENDPOINT+'/user/'+this.props.userInfo.id, {
-            credentials: 'include',
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(res => {
-            if (!res.ok) {
-                return Promise.reject({
-                    code: res.status,
-                    message: res.statusText
-                });
-            }
-            return res.json()
-        })
-        //add redirect here
-        .then(resJSON => 
-            this.props.dispatch(updateUserGames(resJSON)))
-        .catch(() => {
-            return null
-        });
+        if(document.cookie.match(new RegExp('^authToken'))) {
+            fetch(GAMES_ENDPOINT+'/user/'+this.props.userInfo.id, {
+                credentials: 'include',
+                method: 'GET',
+                headers: {
+                  'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
+                }
+            })
+            .then(res => {
+                if (!res.ok) {
+                    return Promise.reject({
+                        code: res.status,
+                        message: res.statusText
+                    });
+                }
+                return res.json()
+            })
+            //add redirect here
+            .then(resJSON => 
+                this.props.dispatch(updateUserGames(resJSON)))
+            .catch(() => {
+                return null
+            });
+        }
+        else {
+            return this.props.history.push('/')
+        }
     }
     componentDidMount() {
-        if(this.props.userInfo.auth) {
-            this.fetchGamesByUser()
-        }
+        this.fetchGamesByUser()
     }
     componentDidUpdate(preprops) {
         if(preprops.userInfo.auth !== this.props.userInfo.auth) {
@@ -73,25 +76,29 @@ export class userProfile extends React.Component {
     }
     deleteAccount = ()=>{
         this.props.dispatch(logOut())
-        fetch(USERS_ENDPOINT+'/'+this.props.userInfo.id, {
-            credentials: 'include',
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(res => {
-            if (!res.ok) {
-                alert('Something wrong, try again later')
-            }
-            this.props.dispatch(authUser({}))
-            this.props.dispatch(updateLink('unAuth'))
-            this.props.history.push('/')
-            return null
-        })
-        .catch(() => {
-            return null
-        })
+        if(document.cookie.length>0) {
+            fetch(USERS_ENDPOINT+'/'+this.props.userInfo.id, {
+                credentials: 'include',
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
+                }
+            })
+            .then(res => {
+                if (!res.ok) {
+                    alert('Something wrong, try again later')
+                }
+                this.props.dispatch(authUser({}))
+                this.props.dispatch(updateLink('unAuth'))
+                this.props.history.push('/')
+                return null
+            })
+            .catch(() => {
+                return null
+            })
+        }
+        
     }
 
     handleDelete(e) {

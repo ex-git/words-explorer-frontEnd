@@ -14,33 +14,42 @@ import './app.css'
 import './mobile.css'
 export class app extends React.Component {
     refreshJWT() {
-        fetch(REFRESH_ENDPOINT, {
-          credentials: 'include',
-          method: 'GET'
-        })
-        .then(res => {
-            if (res.ok) {
-              return res.json()
-            }
-            this.stopPeriodicRefresh();
-            this.props.dispatch(authUser({}))
-            this.props.dispatch(updateLink('unAuth'))
-            this.props.history.push('/')
-        })
-        .then(resJSON=>{
-          const user = {
-            name: resJSON.validUser.userName,
-            auth: 'yes',
-            scores: resJSON.validUser.scores,
-            id: resJSON.validUser['_id']
-          }
-          document.cookie = `authToken=${resJSON.authToken};max-age=600000;hostOnly="false"`
-          this.props.dispatch(authUser(user))
-          return this.props.dispatch(updateLink('auth'))
-        })
-        .catch(() => {
-          return null
-        })
+        console.log('re', document.cookie.length>0)
+        //if cookie exist, refresh JWTs
+        if(document.cookie.length>0) {
+            fetch(REFRESH_ENDPOINT, {
+                credentials: 'include',
+                method: 'GET',
+                headers: {
+                  'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
+                }
+              })
+              .then(res => {
+                  if (res.ok) {
+                    return res.json()
+                  }
+                  this.stopPeriodicRefresh();
+                  this.props.dispatch(authUser({}))
+                  this.props.dispatch(updateLink('unAuth'))
+                  this.props.history.push('/')
+              })
+              .then(resJSON=>{
+                const user = {
+                  name: resJSON.validUser.userName,
+                  auth: 'yes',
+                  scores: resJSON.validUser.scores,
+                  id: resJSON.validUser['_id']
+                }
+                document.cookie = `authToken=${resJSON.authToken};max-age=0;path=/`
+                document.cookie = `authToken=${resJSON.authToken};max-age=600000;path=/`
+                this.props.dispatch(authUser(user))
+                return this.props.dispatch(updateLink('auth'))
+              })
+              .catch(() => {
+                return null
+              })
+        }
+        
     }
 
     componentWillMount() {

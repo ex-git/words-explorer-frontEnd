@@ -13,9 +13,13 @@ export class createGame extends React.Component {
 
     onSubmit(values) {
         //get word definition from API
-        return fetch(WORDS_ENDPOINT+"/"+values.word, {
-            credentials: 'include',
-            method: 'GET'
+        if(document.cookie.length>0) {
+            fetch(WORDS_ENDPOINT+"/"+values.word, {
+                credentials: 'include',
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
+                }
             })
             .then(res => {
                 if (res.status!==200) {
@@ -49,7 +53,11 @@ export class createGame extends React.Component {
                     })
                 );
             });
-                
+        }
+        else {
+            alert('You need to log in first')
+            return this.props.history.push('/')
+        }       
     }
     render() {
         let errorMessage;

@@ -11,80 +11,85 @@ import './liveGame.css'
 
 export class liveGame extends React.Component {
     checkGameStatus() {
-        fetch(GAMES_ENDPOINT+'/' + this.props.match.params.gameId, {
-            credentials: 'include',
-            method: 'GET'
-          })
-        .then(res=>{
-            if(res.ok) {
-                return res.json()
-            }
-            else if(res.status===401) {
-                this.props.dispatch(authUser({}))
-                this.props.dispatch(updateLink('unAuth'))
-                alert('You got kicked out due to authentication error')
-                return this.props.history.push('/')
-            }
-        })
-        .then(resJSON=> this.props.dispatch(fetchGame(resJSON)))
-        .catch(err=>
-            this.props.history.push('/')
-        )
+        if(document.cookie.length>0) {
+            fetch(GAMES_ENDPOINT+'/' + this.props.match.params.gameId, {
+                credentials: 'include',
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
+                }
+            })
+            .then(res=>{
+                if(res.ok) {
+                    return res.json()
+                }
+                else if(res.status===401) {
+                    this.props.dispatch(authUser({}))
+                    this.props.dispatch(updateLink('unAuth'))
+                    alert('You got kicked out due to authentication error')
+                    return this.props.history.push('/')
+                }
+            })
+            .then(resJSON=> this.props.dispatch(fetchGame(resJSON)))
+            .catch(err=>
+                this.props.history.push('/')
+            )
+        }
+        else {
+            alert('You need to log in first')
+            return this.props.history.push('/')
+        }
     }
 
     joinGame() {
-        fetch(GAMES_ENDPOINT+'/'+this.props.match.params.gameId, {
-            credentials: 'include',
-            method: "PUT",
-            body: JSON.stringify({join:'yes'}),
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-            }
-        })
-        .then(res=> {
-            if (res.ok) {
-                return res.json()
-            }
-            else if(res.status===401) {
-                this.props.dispatch(authUser({}))
-                this.props.dispatch(updateLink('unAuth'))
-                alert('You got kicked out due to authentication error')
-                return this.props.history.push('/')
-            }
-            else if(res.status===500) {
-                alert("We can't find this game")
-                return this.props.history.push('/')
-            }
-        })
-        .then(resJSON=> {
-            if(resJSON.players !== undefined && !resJSON.players.includes(this.props.userInfo.name) && resJSON.gameStatus !== 'open') {
-                clearInterval(this.fetchGame)
-                this.props.history.push('/')
-                alert('Game is currently playing by other players, try again later')
-            } 
-            else {
-                this.props.dispatch(fetchGame(resJSON))
-            }
-        })
-        .catch(
-            ()=>null                
-        )
-    }
-    componentWillMount(){
-
-        //if logged in, send user name to API to join game. Reset question index to 0
-        if(this.props.userInfo.name !== undefined && this.props.userInfo.auth==='yes') {
-            this.joinGame()
-            return this.props.dispatch(updateQuestionIndex(0))
+        if(document.cookie.length>0) {
+            fetch(GAMES_ENDPOINT+'/'+this.props.match.params.gameId, {
+                credentials: 'include',
+                method: "PUT",
+                body: JSON.stringify({join:'yes'}),
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
+                }
+            })
+            .then(res=> {
+                if (res.ok) {
+                    return res.json()
+                }
+                else if(res.status===401) {
+                    this.props.dispatch(authUser({}))
+                    this.props.dispatch(updateLink('unAuth'))
+                    alert('You got kicked out due to authentication error')
+                    return this.props.history.push('/')
+                }
+                else if(res.status===500) {
+                    alert("We can't find this game")
+                    return this.props.history.push('/')
+                }
+            })
+            .then(resJSON=> {
+                if(resJSON.gameStatus !== 'open') {
+                    clearInterval(this.fetchGame)
+                    this.props.history.push('/')
+                    alert('Game is currently playing by other players, try again later')
+                } 
+                else {
+                    this.props.dispatch(fetchGame(resJSON))
+                }
+            })
+            .catch(
+                ()=>null                
+            )
         }
         else {
-            //any error or user refresh tab, kick out player to make sure other players have the same timmer
-            alert('Oops, you got kicked out.')
-            this.props.dispatch(authUser({}))
-            this.props.dispatch(updateLink('unAuth'))
+            alert('You need to log in first')
             return this.props.history.push('/')
         }
-        
+    }
+    componentWillMount(){
+        this.joinGame()
+        return this.props.dispatch(updateQuestionIndex(0))
+       
     }
 
     componentDidUpdate(prevProps) {

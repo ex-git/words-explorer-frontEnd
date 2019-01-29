@@ -10,6 +10,10 @@
   * JavaScript
   * React
   * Redux
+
+  API
+  https://words-explorer-api.herokuapp.com/
+
   * MongoDB
     * Mongoose
   * NodeJS

@@ -61,7 +61,8 @@ export const wordsExplorerReducer  = (state=initState, action) => {
                 method: "PUT",
                 body: JSON.stringify({gameStatus: action.gameStatus}),
                 headers: {
-                    "Content-Type": "application/json; charset=utf-8",
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
                 }
             })
             .then(()=>
@@ -127,7 +128,8 @@ export const wordsExplorerReducer  = (state=initState, action) => {
                 body: JSON.stringify({userName: state.userInfo.name,
                     scores: totalScore}),
                 headers: {
-                    "Content-Type": "application/json; charset=utf-8",
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
                 }
             })
             .then(()=>
@@ -174,7 +176,8 @@ export const wordsExplorerReducer  = (state=initState, action) => {
                     method: "PUT",
                     body: JSON.stringify({answersReceived: newanswersReceived}),
                     headers: {
-                        "Content-Type": "application/json; charset=utf-8",
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
                     }
                 })
                 .then(()=>
@@ -217,7 +220,8 @@ export const wordsExplorerReducer  = (state=initState, action) => {
                         players: []}
                         ),
                     headers: {
-                        "Content-Type": "application/json; charset=utf-8",
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
                     }
                 })
                 .then(()=> {
@@ -237,7 +241,8 @@ export const wordsExplorerReducer  = (state=initState, action) => {
                     method: "PUT",
                     body: JSON.stringify(joinStatus),
                     headers: {
-                        "Content-Type": "application/json; charset=utf-8",
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
                     }
                 })
                 .then(()=> {
