@@ -15,7 +15,8 @@ export class userProfile extends React.Component {
                 method: 'PUT',
                 body: JSON.stringify(values),
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + document.cookie.split('=').slice(-1)[0]
                 }
             })
             .then(res => {
