@@ -14,7 +14,6 @@ import './app.css'
 import './mobile.css'
 export class app extends React.Component {
     refreshJWT() {
-        console.log('re', document.cookie.length>0)
         //if cookie exist, refresh JWTs
         if(document.cookie.length>0) {
             fetch(REFRESH_ENDPOINT, {
