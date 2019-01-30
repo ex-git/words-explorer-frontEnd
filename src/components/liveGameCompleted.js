@@ -20,7 +20,7 @@ export function liveGameCompleted(props) {
                         <br></br>Your correct answer rate is {(props.gameResult.totalScore/props.gameResult.totalQuestion*100).toFixed(2)}%</p>
                     </div>
                     <div>
-                        <button onClick={e=>exit(e)}>Exist</button>
+                        <button onClick={e=>exit(e)}>Exit</button>
                     </div>
                 </section>
         </div>
