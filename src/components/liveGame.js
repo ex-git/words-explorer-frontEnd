@@ -107,7 +107,7 @@ export class liveGame extends React.Component {
                     else {
                         clearInterval(this.fetchGame)
                     }
-                }.bind(this), 1000)
+                }.bind(this), 1500)
             }.bind(this), 1000)
         }
     }

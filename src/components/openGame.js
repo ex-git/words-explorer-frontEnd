@@ -8,7 +8,7 @@ import {GAMES_ENDPOINT} from './config'
 import './openGame.css'
 
 export class openGame extends React.Component {
-    //get open game from API every 2 sec
+    //get open game from API every 3 sec
     componentDidMount(){
         this.fetchUpdate = setInterval(function(){
             fetch(GAMES_ENDPOINT)
@@ -24,7 +24,7 @@ export class openGame extends React.Component {
             .catch(()=>
                 Promise.resolve()
             )
-        }.bind(this), 2000)
+        }.bind(this), 3000)
     }
     componentWillUnmount() {
         clearInterval(this.fetchUpdate)
