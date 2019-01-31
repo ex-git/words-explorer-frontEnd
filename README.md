@@ -11,8 +11,8 @@
   * React
   * Redux
 
-  API
-  https://words-explorer-api.herokuapp.com/
+## Backend API
+ https://github.com/ex-git/words-explorer-backEnd
 
   * MongoDB
     * Mongoose
@@ -24,7 +24,7 @@
 
 ## Online Demo
 
-https://words-explorer.herokuapp.com/
+http://wordsexplorer.fodx.com/
 
 ```
 demo login: demo
