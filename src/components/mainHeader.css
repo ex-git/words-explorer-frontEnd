@@ -75,3 +75,9 @@
     display: inline-block;
     margin-right: 20px;
 }
+
+.mainHead .fa-graduation-cap{
+    color: #0E5CB4;
+    margin-right: 5px;
+    font-size: 28px;
+}

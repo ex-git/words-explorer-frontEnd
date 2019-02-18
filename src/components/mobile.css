@@ -7,6 +7,11 @@
         background-position: top center;
         background-repeat: no-repeat;
     }
+
+    .logIn, .signUp {
+        background: none;
+        height:unset
+    }
     .intro .introText {
         max-width: 100%;
         text-align: center;

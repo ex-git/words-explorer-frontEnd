@@ -2,7 +2,6 @@ import React from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {logOut, updateLink, authUser} from '../actions'
-import './topNav.css'
 
 export function topNav(props) {
   const navItems = props.links.filter(link=> link.status === 1).map((link, idx)=>

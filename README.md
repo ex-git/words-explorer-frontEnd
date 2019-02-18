@@ -24,7 +24,7 @@
 
 ## Online Demo
 
-http://wordsexplorer.fodx.com/
+http://wordsexplorer.evanxu.me
 
 ```
 demo login: demo
